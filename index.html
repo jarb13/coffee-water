@@ -71,844 +71,1562 @@
 
 <body class="bg-[#F9F8F6] text-stone-800 min-h-screen font-sans selection:bg-stone-800 selection:text-white pb-20">
 
-    <!-- Clean Minimal Header -->
+    <!-- Clean Minimal Header with Main Tab Navigation -->
     <header class="bg-white border-b border-stone-200 sticky top-0 z-30">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-stone-900 flex items-center justify-center text-white shadow-sm">
-                    <i class="ph-fill ph-drop-half-bottom text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-stone-900 tracking-tight">
-                        Coffee Water Lab
-                    </h1>
-                    <p class="text-sm text-stone-500">คำนวณน้ำหนักสารผสมน้ำชงกาแฟ (Epsom · Calcium Lactate · Baking
-                        Soda)</p>
+        <div
+            class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3.5 cursor-pointer" onclick="switchMainTab('calculator')">
+                    <div
+                        class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-900 flex items-center justify-center text-white shadow-sm shrink-0">
+                        <i class="ph-fill ph-drop-half-bottom text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight">
+                                Coffee Water Lab
+                            </h1>
+                            <span
+                                class="hidden md:inline-flex items-center gap-1.5 text-xs bg-stone-100 border border-stone-200 px-2.5 py-0.5 rounded-full text-stone-600 font-medium">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                SCA (ppm as CaCO₃)
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-500">คำนวณน้ำหนักสารผสมน้ำชงกาแฟ & คู่มือแร่ธาตุ</p>
+                    </div>
                 </div>
             </div>
 
-            <div
-                class="flex items-center gap-2 text-sm bg-stone-100 border border-stone-200 px-4 py-2 rounded-full text-stone-700 font-medium">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span>หน่วยมาตรฐาน SCA (ppm as CaCO₃)</span>
-            </div>
+            <!-- Main Navigation Tabs (Calculator vs User Guide) -->
+            <nav class="bg-stone-100 p-1.5 rounded-2xl border border-stone-200 flex items-center gap-1 self-stretch sm:self-auto"
+                aria-label="Main Tabs">
+                <button onclick="switchMainTab('calculator')" id="mainTabCalc"
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all bg-stone-900 text-white shadow-sm">
+                    <i class="ph-fill ph-calculator text-lg text-amber-400"></i>
+                    <span>โปรแกรมคำนวณ</span>
+                </button>
+                <button onclick="switchMainTab('guide')" id="mainTabGuide"
+                    class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all text-stone-600 hover:text-stone-900 hover:bg-stone-200/60">
+                    <i class="ph-fill ph-book-open-text text-lg text-sky-600"></i>
+                    <span>คู่มือแร่ธาตุ & สารทดแทน</span>
+                </button>
+            </nav>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
 
-        <!-- STEP 1: Presets (Simple & Large) -->
-        <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 1</span>
-                    <h2 class="text-xl sm:text-2xl font-bold text-stone-900">เลือกโปรไฟล์น้ำตามโพรเซส หรือ รสชาติ</h2>
-                </div>
-                <span class="text-sm text-stone-500">กดเลือกเพื่อตั้งค่าเริ่มต้น (ปรับเองต่อได้)</span>
-            </div>
+        <!-- ==========================================
+             TAB 1: WATER CALCULATOR VIEW
+        =========================================== -->
+        <div id="pageCalculator" class="space-y-8">
 
-            <!-- Process Presets -->
-            <div class="mb-6">
-                <label class="text-sm font-semibold text-stone-500 mb-3 block">เลือกตามโพรเซสกาแฟ (Coffee
-                    Process)</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <button onclick="applyPreset('washed')" id="btn-washed"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-bold text-stone-900">Washed</span>
-                            <span
-                                class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">85
-                                ppm</span>
-                        </div>
-                        <div class="text-sm text-stone-600 font-medium">คลีน สว่าง ซับซ้อน</div>
-                        <div class="text-xs text-stone-400 mt-1">เน้น Mg ดึงกลิ่นดอกไม้/ผลไม้</div>
-                    </button>
-
-                    <button onclick="applyPreset('natural')" id="btn-natural"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-bold text-stone-900">Natural / Dry</span>
-                            <span
-                                class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">95
-                                ppm</span>
-                        </div>
-                        <div class="text-sm text-stone-600 font-medium">หวานฉ่ำ บอดี้แน่น</div>
-                        <div class="text-xs text-stone-400 mt-1">เน้น Ca + Na ชูรสหวาน</div>
-                    </button>
-
-                    <button onclick="applyPreset('honey')" id="btn-honey"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-bold text-stone-900">Honey</span>
-                            <span
-                                class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">90
-                                ppm</span>
-                        </div>
-                        <div class="text-sm text-stone-600 font-medium">หวานละมุน กลมกล่อม</div>
-                        <div class="text-xs text-stone-400 mt-1">สัดส่วน Mg และ Ca สมดุลกัน</div>
-                    </button>
-
-                    <button onclick="applyPreset('anaerobic')" id="btn-anaerobic"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-bold text-stone-900">Anaerobic</span>
-                            <span
-                                class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">70
-                                ppm</span>
-                        </div>
-                        <div class="text-sm text-stone-600 font-medium">กลิ่นพุ่ง ไม่ขมฝาด</div>
-                        <div class="text-xs text-stone-400 mt-1">ลด TDS ป้องกันการสกัดเกิน</div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Flavor Presets -->
-            <div>
-                <label class="text-sm font-semibold text-stone-500 mb-3 block">หรือเลือกตามโทนรสชาติที่อยากเน้น (Flavor
-                    Target)</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <button onclick="applyPreset('acidity')" id="btn-acidity"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-3 h-3 rounded-full bg-sky-500"></span>
-                            <span class="text-base font-bold text-stone-900">เน้นเปรี้ยวสดใส</span>
-                        </div>
-                        <div class="text-xs text-stone-500">Mg สูง (60%) ดึงกรดผลไม้เต็มที่</div>
-                    </button>
-
-                    <button onclick="applyPreset('sweetness')" id="btn-sweetness"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                            <span class="text-base font-bold text-stone-900">เน้นความหวาน</span>
-                        </div>
-                        <div class="text-xs text-stone-500">เพิ่ม Buffer ตัดเปรี้ยวแหลม ชูรสหวาน</div>
-                    </button>
-
-                    <button onclick="applyPreset('body')" id="btn-body"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                            <span class="text-base font-bold text-stone-900">เน้นบอดี้นุ่มแน่น</span>
-                        </div>
-                        <div class="text-xs text-stone-500">Calcium Lactate สูง (50%) นุ่มครีมมี่</div>
-                    </button>
-
-                    <button onclick="applyPreset('balanced')" id="btn-balanced"
-                        class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-900 bg-stone-900 text-white transition-all">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                            <span class="text-base font-bold">สมดุล (SCA)</span>
-                        </div>
-                        <div class="text-xs text-stone-300">สูตรมาตรฐาน บาลานซ์ทุกมิติ</div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Active Preset Explanation Banner -->
+            <!-- Quick Intro Callout to User Guide -->
             <div
-                class="mt-6 bg-stone-100 border border-stone-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <div class="text-xs font-bold uppercase tracking-wider text-stone-500" id="bannerBadge">
-                        โปรไฟล์ที่เลือก</div>
-                    <h3 class="text-lg font-bold text-stone-900 mt-0.5" id="bannerTitle">Balanced (สมดุลมาตรฐาน SCA)
-                    </h3>
-                    <p class="text-sm text-stone-600 mt-1" id="bannerDesc">
-                        ให้ความสมดุลทั้งความเปรี้ยว ความหวาน และบอดี้
-                        เหมาะสำหรับกาแฟทุกโพรเซสเพื่อดูคาแรกเตอร์พื้นฐานของเมล็ด
-                    </p>
+                class="bg-stone-900 text-white rounded-2xl p-4 sm:px-6 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-start sm:items-center gap-3">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-stone-800 border border-stone-700 flex items-center justify-center text-amber-400 shrink-0 mt-0.5 sm:mt-0">
+                        <i class="ph-fill ph-lightbulb text-xl"></i>
+                    </div>
+                    <div class="text-sm text-stone-200">
+                        <strong class="text-white">มือใหม่หัดผสมน้ำชงกาแฟ?</strong> ทำความเข้าใจก่อนว่า <span
+                            class="text-sky-300 font-medium">Mg</span>, <span
+                            class="text-amber-300 font-medium">Ca</span>, <span
+                            class="text-emerald-300 font-medium">Buffer</span> คืออะไร ช่วยเรื่องรสชาติอย่างไร
+                        และใช้อะไรแทนกันได้บ้าง
+                    </div>
                 </div>
-                <div class="shrink-0 bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-right">
-                    <div class="text-xs text-stone-500">อัตราส่วน ความกระด้าง : ด่าง (GH:KH)</div>
-                    <div class="text-xl font-bold font-mono text-stone-900" id="ghKhRatioDisplay">2.3 : 1</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- STEP 2: Water Volume, TDS & Mineral Sliders -->
-        <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
-            <div>
-                <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 2</span>
-                <h2 class="text-xl sm:text-2xl font-bold text-stone-900">กำหนดปริมาณน้ำ และ ค่า TDS ที่ต้องการ</h2>
+                <button onclick="switchMainTab('guide')"
+                    class="shrink-0 bg-white hover:bg-stone-100 text-stone-900 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition shadow-sm">
+                    <i class="ph-bold ph-book-open-text text-base"></i>
+                    <span>อ่านคู่มือก่อนใช้งาน</span>
+                    <i class="ph-bold ph-arrow-right"></i>
+                </button>
             </div>
 
-            <!-- Big Inputs: Water Volume & Target TDS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <!-- Box 1: Water Volume -->
-                <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
+            <!-- STEP 1: Presets (Simple & Large) -->
+            <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
                     <div>
-                        <label class="text-base font-bold text-stone-900 block">1. ปริมาณน้ำที่ใช้ชงกาแฟ (ml)</label>
-                        <p class="text-sm text-stone-500 mt-0.5">ขนาดกาดริป เหยือก หรือแกลลอนน้ำที่คุณต้องการผสม</p>
+                        <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 1</span>
+                        <h2 class="text-xl sm:text-2xl font-bold text-stone-900">เลือกโปรไฟล์น้ำตามโพรเซส หรือ รสชาติ
+                        </h2>
                     </div>
-
-                    <div class="my-4 flex items-baseline gap-3">
-                        <input type="number" id="brewWaterInput" value="600" min="50" max="20000" step="10"
-                            oninput="calculateAll()"
-                            class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
-                        <span class="text-xl font-bold text-stone-500 font-mono">ml</span>
-                    </div>
-
-                    <!-- Quick Volume Buttons -->
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="setBrewVolume(250)"
-                            class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">250
-                            ml</button>
-                        <button onclick="setBrewVolume(500)"
-                            class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">500
-                            ml</button>
-                        <button onclick="setBrewVolume(600)"
-                            class="vol-pill text-sm font-mono font-bold px-3 py-1.5 rounded-xl bg-stone-900 text-white border border-stone-900 transition">600
-                            ml (กาดริป)</button>
-                        <button onclick="setBrewVolume(1000)"
-                            class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">1,000
-                            ml (1 ลิตร)</button>
-                        <button onclick="setBrewVolume(5000)"
-                            class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">5,000
-                            ml</button>
-                    </div>
+                    <span class="text-sm text-stone-500">กดเลือกเพื่อตั้งค่าเริ่มต้น (ปรับเองต่อได้)</span>
                 </div>
 
-                <!-- Box 2: Target TDS -->
-                <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <label class="text-base font-bold text-stone-900 block">2. ค่า TDS เป้าหมาย (ppm)</label>
-                        <p class="text-sm text-stone-500 mt-0.5">ความเข้มข้นแร่ธาตุรวม (แนะนำ 70 - 110 ppm สำหรับดริป)
-                        </p>
-                    </div>
+                <!-- Process Presets -->
+                <div class="mb-6">
+                    <label class="text-sm font-semibold text-stone-500 mb-3 block">เลือกตามโพรเซสกาแฟ (Coffee
+                        Process)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button onclick="applyPreset('washed')" id="btn-washed"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-base font-bold text-stone-900">Washed</span>
+                                <span
+                                    class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">85
+                                    ppm</span>
+                            </div>
+                            <div class="text-sm text-stone-600 font-medium">คลีน สว่าง ซับซ้อน</div>
+                            <div class="text-xs text-stone-400 mt-1">เน้น Mg ดึงกลิ่นดอกไม้/ผลไม้</div>
+                        </button>
 
-                    <div class="my-4 flex items-baseline gap-3">
-                        <input type="number" id="targetTdsInput" value="90" min="10" max="400" step="1"
-                            class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
-                        <span class="text-xl font-bold text-stone-500 font-mono">ppm</span>
-                    </div>
+                        <button onclick="applyPreset('natural')" id="btn-natural"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-base font-bold text-stone-900">Natural / Dry</span>
+                                <span
+                                    class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">95
+                                    ppm</span>
+                            </div>
+                            <div class="text-sm text-stone-600 font-medium">หวานฉ่ำ บอดี้แน่น</div>
+                            <div class="text-xs text-stone-400 mt-1">เน้น Ca + Na ชูรสหวาน</div>
+                        </button>
 
-                    <div>
-                        <input type="range" id="targetTdsSlider" min="20" max="200" step="1" value="90"
-                            class="w-full text-stone-900">
-                        <div class="flex justify-between text-xs font-mono text-stone-500 mt-1.5">
-                            <span>30 ppm (บางเบา)</span>
-                            <span>90 ppm (มาตรฐาน)</span>
-                            <span>150+ ppm (เข้มข้น)</span>
-                        </div>
-                    </div>
-                </div>
+                        <button onclick="applyPreset('honey')" id="btn-honey"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-base font-bold text-stone-900">Honey</span>
+                                <span
+                                    class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">90
+                                    ppm</span>
+                            </div>
+                            <div class="text-sm text-stone-600 font-medium">หวานละมุน กลมกล่อม</div>
+                            <div class="text-xs text-stone-400 mt-1">สัดส่วน Mg และ Ca สมดุลกัน</div>
+                        </button>
 
-            </div>
-
-            <!-- Mineral Proportion Sliders -->
-            <div class="pt-4 border-t border-stone-200 space-y-5">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div>
-                        <h3 class="text-lg font-bold text-stone-900">สัดส่วนสารประกอบทั้ง 3 ชนิด</h3>
-                        <p class="text-sm text-stone-500">เลื่อนปรับเปอร์เซ็นต์
-                            ระบบจะคำนวณน้ำหนักกรัมตามมวลโมเลกุลของสารแต่ละตัวให้อัตโนมัติ</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span id="totalPercentBadge"
-                            class="text-sm font-mono font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">รวม:
-                            100%</span>
-                        <button onclick="normalizePercentages()"
-                            class="text-sm font-medium text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-xl transition">
-                            ปรับรวมให้ 100%
+                        <button onclick="applyPreset('anaerobic')" id="btn-anaerobic"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-base font-bold text-stone-900">Anaerobic</span>
+                                <span
+                                    class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">70
+                                    ppm</span>
+                            </div>
+                            <div class="text-sm text-stone-600 font-medium">กลิ่นพุ่ง ไม่ขมฝาด</div>
+                            <div class="text-xs text-stone-400 mt-1">ลด TDS ป้องกันการสกัดเกิน</div>
                         </button>
                     </div>
                 </div>
 
-                <!-- 1. Magnesium (Epsom Salt) -->
-                <div class="p-5 rounded-2xl bg-sky-50/60 border border-sky-200/80 space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-3.5 h-3.5 rounded-full bg-sky-600"></span>
-                                <span class="font-bold text-lg text-stone-900">แมกนีเซียม (Mg) — ใช้ดีเกลือฝรั่ง (Epsom
-                                    Salt)</span>
+                <!-- Flavor Presets -->
+                <div>
+                    <label class="text-sm font-semibold text-stone-500 mb-3 block">หรือเลือกตามโทนรสชาติที่อยากเน้น
+                        (Flavor
+                        Target)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button onclick="applyPreset('acidity')" id="btn-acidity"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                                <span class="text-base font-bold text-stone-900">เน้นเปรี้ยวสดใส</span>
                             </div>
-                            <p class="text-sm text-stone-600 mt-0.5">ช่วยดึงกลิ่นหอมผลไม้ ดอกไม้ และความเปรี้ยวที่สดใส
-                                (Acidity)</p>
-                        </div>
-                        <div class="flex items-center gap-4 font-mono">
-                            <div class="text-right">
-                                <span id="mgPpmDisplay" class="text-2xl font-bold text-sky-700">40.5</span>
-                                <span class="text-sm text-stone-500">ppm</span>
+                            <div class="text-xs text-stone-500">Mg สูง (60%) ดึงกรดผลไม้เต็มที่</div>
+                        </button>
+
+                        <button onclick="applyPreset('sweetness')" id="btn-sweetness"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <span class="text-base font-bold text-stone-900">เน้นความหวาน</span>
                             </div>
-                            <div class="flex items-center bg-white border-2 border-sky-300 rounded-xl px-3 py-1.5">
-                                <input type="number" id="mgPercentInput" value="45" min="0" max="100"
-                                    class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
-                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                            <div class="text-xs text-stone-500">เพิ่ม Buffer ตัดเปรี้ยวแหลม ชูรสหวาน</div>
+                        </button>
+
+                        <button onclick="applyPreset('body')" id="btn-body"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span class="text-base font-bold text-stone-900">เน้นบอดี้นุ่มแน่น</span>
                             </div>
-                        </div>
+                            <div class="text-xs text-stone-500">Calcium Lactate สูง (50%) นุ่มครีมมี่</div>
+                        </button>
+
+                        <button onclick="applyPreset('balanced')" id="btn-balanced"
+                            class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-900 bg-stone-900 text-white transition-all">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                <span class="text-base font-bold">สมดุล (SCA)</span>
+                            </div>
+                            <div class="text-xs text-stone-300">สูตรมาตรฐาน บาลานซ์ทุกมิติ</div>
+                        </button>
                     </div>
-                    <input type="range" id="mgPercentSlider" min="0" max="100" value="45" class="w-full text-sky-600">
                 </div>
 
-                <!-- 2. Calcium (Calcium Lactate) -->
-                <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-3.5 h-3.5 rounded-full bg-amber-600"></span>
-                                <span class="font-bold text-lg text-stone-900">แคลเซียม (Ca) — ใช้แคลเซียมแลคเตท
-                                    (Calcium Lactate)</span>
-                            </div>
-                            <p class="text-sm text-stone-600 mt-0.5">เพิ่มเนื้อสัมผัสหนักแน่น นุ่มนวล ครีมมี่ (Body &
-                                Sweet Finish) *ใช้ปริมาณกรัมมากกว่าตัวอื่นเพราะมวลโมเลกุลใหญ่*</p>
-                        </div>
-                        <div class="flex items-center gap-4 font-mono">
-                            <div class="text-right">
-                                <span id="caPpmDisplay" class="text-2xl font-bold text-amber-700">22.5</span>
-                                <span class="text-sm text-stone-500">ppm</span>
-                            </div>
-                            <div class="flex items-center bg-white border-2 border-amber-300 rounded-xl px-3 py-1.5">
-                                <input type="number" id="caPercentInput" value="25" min="0" max="100"
-                                    class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
-                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
-                            </div>
-                        </div>
+                <!-- Active Preset Explanation Banner -->
+                <div
+                    class="mt-6 bg-stone-100 border border-stone-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-stone-500" id="bannerBadge">
+                            โปรไฟล์ที่เลือก</div>
+                        <h3 class="text-lg font-bold text-stone-900 mt-0.5" id="bannerTitle">Balanced (สมดุลมาตรฐาน SCA)
+                        </h3>
+                        <p class="text-sm text-stone-600 mt-1" id="bannerDesc">
+                            ให้ความสมดุลทั้งความเปรี้ยว ความหวาน และบอดี้
+                            เหมาะสำหรับกาแฟทุกโพรเซสเพื่อดูคาแรกเตอร์พื้นฐานของเมล็ด
+                        </p>
                     </div>
-                    <input type="range" id="caPercentSlider" min="0" max="100" value="25" class="w-full text-amber-600">
+                    <div class="shrink-0 bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-right">
+                        <div class="text-xs text-stone-500">อัตราส่วน ความกระด้าง : ด่าง (GH:KH)</div>
+                        <div class="text-xl font-bold font-mono text-stone-900" id="ghKhRatioDisplay">2.3 : 1</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: Water Volume, TDS & Mineral Sliders -->
+            <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 2</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-stone-900">กำหนดปริมาณน้ำ และ ค่า TDS ที่ต้องการ</h2>
                 </div>
 
-                <!-- 3. Buffer / Sodium (Baking Soda) -->
-                <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-3">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
+                <!-- Big Inputs: Water Volume & Target TDS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Box 1: Water Volume -->
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
                         <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
-                                <span class="font-bold text-lg text-stone-900">บัฟเฟอร์ (KH/Na) — ใช้เบกกิ้งโซดา (Baking
-                                    Soda)</span>
-                            </div>
-                            <p class="text-sm text-stone-600 mt-0.5">ลดความเปรี้ยวแหลม ควบคุมสมดุลกรด และช่วยชูความหวาน
+                            <label class="text-base font-bold text-stone-900 block">1. ปริมาณน้ำที่ใช้ชงกาแฟ
+                                (ml)</label>
+                            <p class="text-sm text-stone-500 mt-0.5">ขนาดกาดริป เหยือก หรือแกลลอนน้ำที่คุณต้องการผสม</p>
+                        </div>
+
+                        <div class="my-4 flex items-baseline gap-3">
+                            <input type="number" id="brewWaterInput" value="600" min="50" max="20000" step="10"
+                                oninput="calculateAll()"
+                                class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
+                            <span class="text-xl font-bold text-stone-500 font-mono">ml</span>
+                        </div>
+
+                        <!-- Quick Volume Buttons -->
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="setBrewVolume(250)"
+                                class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">250
+                                ml</button>
+                            <button onclick="setBrewVolume(500)"
+                                class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">500
+                                ml</button>
+                            <button onclick="setBrewVolume(600)"
+                                class="vol-pill text-sm font-mono font-bold px-3 py-1.5 rounded-xl bg-stone-900 text-white border border-stone-900 transition">600
+                                ml (กาดริป)</button>
+                            <button onclick="setBrewVolume(1000)"
+                                class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">1,000
+                                ml (1 ลิตร)</button>
+                            <button onclick="setBrewVolume(5000)"
+                                class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">5,000
+                                ml</button>
+                        </div>
+                    </div>
+
+                    <!-- Box 2: Target TDS -->
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <label class="text-base font-bold text-stone-900 block">2. ค่า TDS เป้าหมาย (ppm)</label>
+                            <p class="text-sm text-stone-500 mt-0.5">ความเข้มข้นแร่ธาตุรวม (แนะนำ 70 - 110 ppm
+                                สำหรับดริป)
                             </p>
                         </div>
-                        <div class="flex items-center gap-4 font-mono">
-                            <div class="text-right">
-                                <span id="naPpmDisplay" class="text-2xl font-bold text-emerald-700">27.0</span>
-                                <span class="text-sm text-stone-500">ppm</span>
+
+                        <div class="my-4 flex items-baseline gap-3">
+                            <input type="number" id="targetTdsInput" value="90" min="10" max="400" step="1"
+                                class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
+                            <span class="text-xl font-bold text-stone-500 font-mono">ppm</span>
+                        </div>
+
+                        <div>
+                            <input type="range" id="targetTdsSlider" min="20" max="200" step="1" value="90"
+                                class="w-full text-stone-900">
+                            <div class="flex justify-between text-xs font-mono text-stone-500 mt-1.5">
+                                <span>30 ppm (บางเบา)</span>
+                                <span>90 ppm (มาตรฐาน)</span>
+                                <span>150+ ppm (เข้มข้น)</span>
                             </div>
-                            <div class="flex items-center bg-white border-2 border-emerald-300 rounded-xl px-3 py-1.5">
-                                <input type="number" id="naPercentInput" value="30" min="0" max="100"
-                                    class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
-                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Mineral Proportion Sliders -->
+                <div class="pt-4 border-t border-stone-200 space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-lg font-bold text-stone-900">สัดส่วนสารประกอบทั้ง 3 ชนิด</h3>
+                            <p class="text-sm text-stone-500">เลื่อนปรับเปอร์เซ็นต์
+                                ระบบจะคำนวณน้ำหนักกรัมตามมวลโมเลกุลของสารแต่ละตัวให้อัตโนมัติ</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span id="totalPercentBadge"
+                                class="text-sm font-mono font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">รวม:
+                                100%</span>
+                            <button onclick="normalizePercentages()"
+                                class="text-sm font-medium text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-xl transition">
+                                ปรับรวมให้ 100%
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 1. Magnesium (Epsom Salt) -->
+                    <div class="p-5 rounded-2xl bg-sky-50/60 border border-sky-200/80 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-sky-600"></span>
+                                    <span class="font-bold text-lg text-stone-900">แมกนีเซียม (Mg) — ใช้ดีเกลือฝรั่ง
+                                        (Epsom
+                                        Salt)</span>
+                                </div>
+                                <p class="text-sm text-stone-600 mt-0.5">ช่วยดึงกลิ่นหอมผลไม้ ดอกไม้
+                                    และความเปรี้ยวที่สดใส
+                                    (Acidity)</p>
+                            </div>
+                            <div class="flex items-center gap-4 font-mono">
+                                <div class="text-right">
+                                    <span id="mgPpmDisplay" class="text-2xl font-bold text-sky-700">40.5</span>
+                                    <span class="text-sm text-stone-500">ppm</span>
+                                </div>
+                                <div class="flex items-center bg-white border-2 border-sky-300 rounded-xl px-3 py-1.5">
+                                    <input type="number" id="mgPercentInput" value="45" min="0" max="100"
+                                        class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                    <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="range" id="mgPercentSlider" min="0" max="100" value="45"
+                            class="w-full text-sky-600">
+                    </div>
+
+                    <!-- 2. Calcium (Calcium Lactate) -->
+                    <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-amber-600"></span>
+                                    <span class="font-bold text-lg text-stone-900">แคลเซียม (Ca) — ใช้แคลเซียมแลคเตท
+                                        (Calcium Lactate)</span>
+                                </div>
+                                <p class="text-sm text-stone-600 mt-0.5">เพิ่มเนื้อสัมผัสหนักแน่น นุ่มนวล ครีมมี่ (Body
+                                    &
+                                    Sweet Finish) *ใช้ปริมาณกรัมมากกว่าตัวอื่นเพราะมวลโมเลกุลใหญ่*</p>
+                            </div>
+                            <div class="flex items-center gap-4 font-mono">
+                                <div class="text-right">
+                                    <span id="caPpmDisplay" class="text-2xl font-bold text-amber-700">22.5</span>
+                                    <span class="text-sm text-stone-500">ppm</span>
+                                </div>
+                                <div
+                                    class="flex items-center bg-white border-2 border-amber-300 rounded-xl px-3 py-1.5">
+                                    <input type="number" id="caPercentInput" value="25" min="0" max="100"
+                                        class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                    <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="range" id="caPercentSlider" min="0" max="100" value="25"
+                            class="w-full text-amber-600">
+                    </div>
+
+                    <!-- 3. Buffer / Sodium (Baking Soda) -->
+                    <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
+                                    <span class="font-bold text-lg text-stone-900">บัฟเฟอร์ (KH/Na) — ใช้เบกกิ้งโซดา
+                                        (Baking
+                                        Soda)</span>
+                                </div>
+                                <p class="text-sm text-stone-600 mt-0.5">ลดความเปรี้ยวแหลม ควบคุมสมดุลกรด
+                                    และช่วยชูความหวาน
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-4 font-mono">
+                                <div class="text-right">
+                                    <span id="naPpmDisplay" class="text-2xl font-bold text-emerald-700">27.0</span>
+                                    <span class="text-sm text-stone-500">ppm</span>
+                                </div>
+                                <div
+                                    class="flex items-center bg-white border-2 border-emerald-300 rounded-xl px-3 py-1.5">
+                                    <input type="number" id="naPercentInput" value="30" min="0" max="100"
+                                        class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                    <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="range" id="naPercentSlider" min="0" max="100" value="30"
+                            class="w-full text-emerald-600">
+                    </div>
+
+                    <!-- Visual Bar & Summary -->
+                    <div class="pt-2">
+                        <div class="h-4 w-full rounded-full bg-stone-200 overflow-hidden flex">
+                            <div id="barMg" class="bg-sky-600 transition-all duration-200" style="width: 45%"></div>
+                            <div id="barCa" class="bg-amber-500 transition-all duration-200" style="width: 25%"></div>
+                            <div id="barNa" class="bg-emerald-600 transition-all duration-200" style="width: 30%"></div>
+                        </div>
+                        <div class="flex flex-wrap justify-between text-sm text-stone-600 mt-2 font-mono">
+                            <span>ความกระด้างรวม GH (Mg + Ca): <strong id="totalGhDisplay" class="text-stone-900">63.0
+                                    ppm</strong></span>
+                            <span>ค่าด่างบัฟเฟอร์ KH (Baking Soda): <strong id="totalKhDisplay"
+                                    class="text-stone-900">27.0
+                                    ppm</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Optional Chemical Settings Accordion -->
+                    <div class="pt-2">
+                        <button onclick="toggleAdvancedChem()"
+                            class="text-sm font-medium text-stone-500 hover:text-stone-800 flex items-center gap-1.5">
+                            <i class="ph ph-gear"></i>
+                            <span>ตั้งค่าชนิดสารเคมีเพิ่มเติม (ค่าเริ่มต้นตั้งเป็น Calcium Lactate + ดีเกลือฝรั่ง +
+                                Baking
+                                Soda แล้ว)</span>
+                            <i id="advChevron" class="ph ph-caret-down transition-transform"></i>
+                        </button>
+
+                        <div id="advancedChemPanel"
+                            class="hidden mt-4 p-4 bg-stone-50 rounded-2xl border border-stone-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">สารแมกนีเซียม (Mg)</label>
+                                <select id="mgSaltSelect" onchange="calculateAll()"
+                                    class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                    <option value="epsom" selected>ดีเกลือฝรั่ง (MgSO₄·7H₂O)</option>
+                                    <option value="mgcl2">แมกนีเซียมคลอไรด์ (MgCl₂·6H₂O)</option>
+                                </select>
+                                <p id="mgSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">สารแคลเซียม (Ca)</label>
+                                <select id="caSaltSelect" onchange="calculateAll()"
+                                    class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                    <option value="lactate_pentahydrate" selected>Calcium Lactate (Pentahydrate ทั่วไป)
+                                    </option>
+                                    <option value="lactate_anhydrous">Calcium Lactate (Anhydrous ไร้ความชื้น)</option>
+                                    <option value="cacl2_dihydrate">แคลเซียมคลอไรด์ (CaCl₂·2H₂O)</option>
+                                    <option value="gypsum">ยิปซัม (CaSO₄·2H₂O)</option>
+                                </select>
+                                <p id="caSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">สารบัฟเฟอร์
+                                    (Buffer/KH)</label>
+                                <select id="naSaltSelect" onchange="calculateAll()"
+                                    class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                    <option value="bicarb" selected>เบกกิ้งโซดา (NaHCO₃)</option>
+                                    <option value="khco3">โพแทสเซียมไบคาร์บอเนต (KHCO₃)</option>
+                                    <option value="nacl">เกลือบริสุทธิ์ (NaCl)</option>
+                                </select>
+                                <p id="naSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
                             </div>
                         </div>
                     </div>
-                    <input type="range" id="naPercentSlider" min="0" max="100" value="30"
-                        class="w-full text-emerald-600">
                 </div>
+            </section>
 
-                <!-- Visual Bar & Summary -->
-                <div class="pt-2">
-                    <div class="h-4 w-full rounded-full bg-stone-200 overflow-hidden flex">
-                        <div id="barMg" class="bg-sky-600 transition-all duration-200" style="width: 45%"></div>
-                        <div id="barCa" class="bg-amber-500 transition-all duration-200" style="width: 25%"></div>
-                        <div id="barNa" class="bg-emerald-600 transition-all duration-200" style="width: 30%"></div>
+            <!-- STEP 3: RESULTS (Big, Clear, 2 Modes) -->
+            <section class="bg-white border-2 border-stone-900 rounded-3xl overflow-hidden shadow-md">
+
+                <!-- Top Header & Mode Switcher -->
+                <div
+                    class="bg-stone-900 text-white p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-amber-400">STEP 3 ·
+                            ผลลัพธ์การคำนวณ</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold mt-1">ปริมาณสารที่ต้องใช้</h2>
+                        <p class="text-stone-300 text-sm mt-0.5">
+                            สำหรับน้ำชงกาแฟ <strong class="brewVolText text-white font-mono underline">600</strong>
+                            <strong>ml</strong> ที่ค่า TDS <strong id="summaryTdsText"
+                                class="text-amber-400 font-mono">90</strong> <strong>ppm</strong>
+                        </p>
                     </div>
-                    <div class="flex flex-wrap justify-between text-sm text-stone-600 mt-2 font-mono">
-                        <span>ความกระด้างรวม GH (Mg + Ca): <strong id="totalGhDisplay" class="text-stone-900">63.0
-                                ppm</strong></span>
-                        <span>ค่าด่างบัฟเฟอร์ KH (Baking Soda): <strong id="totalKhDisplay" class="text-stone-900">27.0
-                                ppm</strong></span>
-                    </div>
-                </div>
 
-                <!-- Optional Chemical Settings Accordion -->
-                <div class="pt-2">
-                    <button onclick="toggleAdvancedChem()"
-                        class="text-sm font-medium text-stone-500 hover:text-stone-800 flex items-center gap-1.5">
-                        <i class="ph ph-gear"></i>
-                        <span>ตั้งค่าชนิดสารเคมีเพิ่มเติม (ค่าเริ่มต้นตั้งเป็น Calcium Lactate + ดีเกลือฝรั่ง + Baking
-                            Soda แล้ว)</span>
-                        <i id="advChevron" class="ph ph-caret-down transition-transform"></i>
-                    </button>
-
-                    <div id="advancedChemPanel"
-                        class="hidden mt-4 p-4 bg-stone-50 rounded-2xl border border-stone-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-1">สารแมกนีเซียม (Mg)</label>
-                            <select id="mgSaltSelect" onchange="calculateAll()"
-                                class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
-                                <option value="epsom" selected>ดีเกลือฝรั่ง (MgSO₄·7H₂O)</option>
-                                <option value="mgcl2">แมกนีเซียมคลอไรด์ (MgCl₂·6H₂O)</option>
-                            </select>
-                            <p id="mgSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-1">สารแคลเซียม (Ca)</label>
-                            <select id="caSaltSelect" onchange="calculateAll()"
-                                class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
-                                <option value="lactate_pentahydrate" selected>Calcium Lactate (Pentahydrate ทั่วไป)
-                                </option>
-                                <option value="lactate_anhydrous">Calcium Lactate (Anhydrous ไร้ความชื้น)</option>
-                                <option value="cacl2_dihydrate">แคลเซียมคลอไรด์ (CaCl₂·2H₂O)</option>
-                                <option value="gypsum">ยิปซัม (CaSO₄·2H₂O)</option>
-                            </select>
-                            <p id="caSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-stone-700 mb-1">สารบัฟเฟอร์ (Buffer/Na)</label>
-                            <select id="naSaltSelect" onchange="calculateAll()"
-                                class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
-                                <option value="bicarb" selected>เบกกิ้งโซดา (NaHCO₃)</option>
-                                <option value="nacl">เกลือบริสุทธิ์ (NaCl)</option>
-                            </select>
-                            <p id="naSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
-                        </div>
+                    <!-- Mode Switcher Pill -->
+                    <div class="bg-stone-800 p-1.5 rounded-2xl flex gap-1 self-start md:self-center">
+                        <button onclick="switchResultMode('direct')" id="tabDirect"
+                            class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all bg-white text-stone-900 shadow">
+                            เทผสมใส่กาดริป / เหยือก
+                        </button>
+                        <button onclick="switchResultMode('dropper')" id="tabDropper"
+                            class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all text-stone-300 hover:text-white">
+                            ผสมใส่ขวด Dropper
+                        </button>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- STEP 3: RESULTS (Big, Clear, 2 Modes) -->
-        <section class="bg-white border-2 border-stone-900 rounded-3xl overflow-hidden shadow-md">
+                <div class="p-6 sm:p-8">
 
-            <!-- Top Header & Mode Switcher -->
-            <div
-                class="bg-stone-900 text-white p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400">STEP 3 ·
-                        ผลลัพธ์การคำนวณ</span>
-                    <h2 class="text-2xl sm:text-3xl font-bold mt-1">ปริมาณสารที่ต้องใช้</h2>
-                    <p class="text-stone-300 text-sm mt-0.5">
-                        สำหรับน้ำชงกาแฟ <strong class="brewVolText text-white font-mono underline">600</strong>
-                        <strong>ml</strong> ที่ค่า TDS <strong id="summaryTdsText"
-                            class="text-amber-400 font-mono">90</strong> <strong>ppm</strong>
+                    <!-- ==========================================
+                     MODE 1: DIRECT MIX INTO KETTLE / PITCHER
+                =========================================== -->
+                    <div id="viewDirect" class="space-y-6">
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-stone-200">
+                            <div>
+                                <h3 class="text-xl font-bold text-stone-900">
+                                    ชั่งผงแร่ธาตุเทลงในน้ำบริสุทธิ์ <span
+                                        class="brewVolText font-mono text-sky-700">600</span> ml โดยตรง
+                                </h3>
+                                <p class="text-sm text-stone-500">
+                                    สารแต่ละตัวใช้ปริมาณกรัมไม่เท่ากัน เนื่องจากน้ำหนักโมเลกุลต่างกัน (โดยเฉพาะ Calcium
+                                    Lactate จะมีน้ำหนักมากกว่า)
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 3 Big Mineral Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                            <!-- Card 1: Epsom Salt -->
+                            <div
+                                class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
+                                        1. แมกนีเซียม (Mg)
+                                    </span>
+                                    <h4 id="directMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง
+                                        (Epsom Salt)</h4>
+                                    <p class="text-sm text-stone-500 mt-1">
+                                        ให้ค่า Mg = <strong id="directMgPpmText"
+                                            class="font-mono text-stone-800">40.5</strong> ppm
+                                    </p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-sky-200/80">
+                                    <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                    <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
+                                        <span id="directMgGrams">0.060</span> <span
+                                            class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        หรือ <strong id="directMgMg" class="text-stone-900">59.9</strong> มิลลิกรัม (mg)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Calcium Lactate -->
+                            <div
+                                class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
+                                        2. แคลเซียม (Ca)
+                                    </span>
+                                    <h4 id="directCaSaltName" class="text-xl font-bold text-stone-900 mt-3">
+                                        แคลเซียมแลคเตท
+                                        (Calcium Lactate)</h4>
+                                    <p class="text-sm text-stone-500 mt-1">
+                                        ให้ค่า Ca = <strong id="directCaPpmText"
+                                            class="font-mono text-stone-800">22.5</strong> ppm
+                                    </p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-amber-200/80">
+                                    <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                    <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
+                                        <span id="directCaGrams">0.042</span> <span
+                                            class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        หรือ <strong id="directCaMg" class="text-stone-900">41.6</strong> มิลลิกรัม (mg)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Baking Soda -->
+                            <div
+                                class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <span
+                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
+                                        3. บัฟเฟอร์ (Buffer)
+                                    </span>
+                                    <h4 id="directNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา
+                                        (Baking Soda)</h4>
+                                    <p class="text-sm text-stone-500 mt-1">
+                                        ให้ค่า KH = <strong id="directNaPpmText"
+                                            class="font-mono text-stone-800">27.0</strong> ppm
+                                    </p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-emerald-200/80">
+                                    <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                    <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
+                                        <span id="directNaGrams">0.027</span> <span
+                                            class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        หรือ <strong id="directNaMg" class="text-stone-900">27.2</strong> มิลลิกรัม (mg)
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Summary Bar -->
+                        <div
+                            class="bg-stone-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="text-sm text-stone-600">
+                                💡 <strong>คำแนะนำ:</strong> หากชั่งใส่กาดริป 600ml โดยตรง น้ำหนักจะน้อยมาก (ระดับ 0.0x
+                                กรัม) แนะนำให้กดเลือกเมนู <strong>"ผสมใส่ขวด Dropper"</strong> ด้านบน หรือผสมใส่แกลลอน
+                                5,000
+                                ml จะชั่งง่ายกว่ามากครับ
+                            </div>
+                            <div class="shrink-0 text-right font-mono">
+                                <span class="text-xs text-stone-500 block">น้ำหนักผงรวมทั้งหมด</span>
+                                <span class="text-lg font-bold text-stone-900"><span id="directTotalGrams">0.129</span>
+                                    g
+                                    (<span id="directTotalMg">128.7</span> mg)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                     MODE 2: DROPPER CONCENTRATE VIEW
+                =========================================== -->
+                    <div id="viewDropper" class="space-y-6 hidden">
+
+                        <!-- Dropper Settings Bar (Size & Concentration Level) -->
+                        <div class="bg-stone-100 border border-stone-200 rounded-2xl p-5 space-y-5">
+
+                            <!-- Row 1: Bottle Size -->
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-200/80">
+                                <div>
+                                    <h3 class="text-lg font-bold text-stone-900">1. เลือกขนาดขวด Dropper
+                                        ที่คุณใช้ทำหัวเชื้อ
+                                    </h3>
+                                    <p class="text-sm text-stone-600">ขนาดขวดสำหรับละลายผงแร่ธาตุเก็บไว้หยดลงกาดริป
+                                        <strong class="brewVolText">600</strong> ml</p>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button onclick="setDropperSize(30)" id="dropSize-30"
+                                        class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">30
+                                        ml</button>
+                                    <button onclick="setDropperSize(50)" id="dropSize-50"
+                                        class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">50
+                                        ml</button>
+                                    <button onclick="setDropperSize(100)" id="dropSize-100"
+                                        class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-900 bg-stone-900 text-white font-bold transition">100
+                                        ml</button>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Concentration Level -->
+                            <div class="space-y-3">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                    <div>
+                                        <h3 class="text-lg font-bold text-stone-900">2.
+                                            เลือกระดับความเข้มข้นของหัวเชื้อในขวด</h3>
+                                        <p class="text-sm text-stone-600">ยิ่งเข้มข้นสูง ยิ่งใช้จำนวนหยดน้อยลง
+                                            (คำนวณตามจุดอิ่มตัวการละลายน้ำของสารแต่ละตัว)</p>
+                                    </div>
+                                    <span id="concModeBadge"
+                                        class="text-xs font-mono font-semibold bg-amber-100 text-amber-900 px-3 py-1 rounded-full self-start sm:self-center">
+                                        หยดน้อยที่สุด (ตามลิมิตการละลายของแต่ละสาร)
+                                    </span>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                                    <button onclick="setDropperConc('low')" id="concBtn-low"
+                                        class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
+                                        <div class="font-bold text-base">ต่ำ (มาตรฐาน)</div>
+                                        <div class="text-xs text-stone-500 mt-0.5">ละลายง่ายมาก คุมหยดละเอียด</div>
+                                        <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +1 ppm
+                                            /
+                                            100ml</div>
+                                    </button>
+
+                                    <button onclick="setDropperConc('medium')" id="concBtn-medium"
+                                        class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
+                                        <div class="font-bold text-base">ปานกลาง (เข้ม 2.5x)</div>
+                                        <div class="text-xs text-stone-500 mt-0.5">ลดจำนวนหยดลง 2.5 เท่า</div>
+                                        <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +2.5
+                                            ppm /
+                                            100ml</div>
+                                    </button>
+
+                                    <button onclick="setDropperConc('high')" id="concBtn-high"
+                                        class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
+                                        <div class="font-bold text-base">สูง (เท่ากันทุกขวด 5x)</div>
+                                        <div class="text-xs text-stone-500 mt-0.5">เพดานสูงสุดของ Calcium Lactate</div>
+                                        <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +5 ppm
+                                            /
+                                            100ml</div>
+                                    </button>
+
+                                    <button onclick="setDropperConc('max')" id="concBtn-max"
+                                        class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-900 bg-stone-900 text-white transition">
+                                        <div class="font-bold text-base flex items-center justify-between">
+                                            <span>สูงสุดแยกตามสาร</span>
+                                            <span
+                                                class="text-[11px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-md font-bold">หยดน้อยสุด</span>
+                                        </div>
+                                        <div class="text-xs text-stone-300 mt-0.5">อัดเต็มลิมิตการละลายของแต่ละตัว</div>
+                                        <div class="text-xs font-mono font-semibold text-amber-300 mt-1">Mg x20 | Ca x9
+                                            | Na
+                                            x24</div>
+                                    </button>
+                                </div>
+
+                                <!-- Solubility Technical Info Box -->
+                                <div
+                                    class="bg-white border border-stone-200 rounded-xl p-3.5 text-xs sm:text-sm text-stone-600 flex items-start gap-2.5">
+                                    <i class="ph-fill ph-info text-stone-800 text-lg shrink-0 mt-0.5"></i>
+                                    <div id="concExplainText">
+                                        <strong>โหมดความเข้มข้นสูงสุดแยกตามสาร (Max Safe Solubility ที่ 25°C):</strong>
+                                        สารแต่ละชนิดละลายน้ำได้ไม่เท่ากัน —
+                                        <strong>ดีเกลือฝรั่ง</strong>ละลายได้สูงมาก (~70g/100ml) เราตั้งไว้ที่
+                                        <strong>49.3g/100ml</strong>,
+                                        ส่วน<strong>แคลเซียมแลคเตท</strong>ละลายได้จำกัด (~6.5g/100ml) เราตั้งไว้ที่
+                                        <strong>5.54g/100ml</strong> (แนะนำใช้น้ำอุ่นช่วยละลาย)
+                                        และ<strong>เบกกิ้งโซดา</strong>ละลายได้ ~9.6g/100ml เราตั้งไว้ที่
+                                        <strong>8.06g/100ml</strong> เพื่อไม่ให้ตกผลึกนอนก้นขวดครับ
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3 Dropper Bottle Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                            <!-- Bottle 1: Mg -->
+                            <div
+                                class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span
+                                            class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
+                                            ขวดที่ 1 : แมกนีเซียม (Mg)
+                                        </span>
+                                        <span id="dropMgStrengthTag"
+                                            class="text-xs font-mono font-bold text-sky-700 bg-white px-2 py-0.5 rounded border border-sky-200">
+                                            1 หยด = +20 ppm/100ml
+                                        </span>
+                                    </div>
+                                    <h4 id="dropMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง
+                                        (Epsom Salt)</h4>
+
+                                    <div class="mt-4 p-3.5 bg-white rounded-xl border border-sky-200">
+                                        <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
+                                                class="dropBottleVolText font-bold">100</span> ml:</div>
+                                        <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                            ใช้สาร <span id="dropMgGrams" class="text-sky-700 font-mono text-2xl">49.26
+                                                g</span>
+                                        </div>
+                                        <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span
+                                                class="dropBottleVolText font-semibold">100</span> ml</div>
+                                        <div id="dropMgSolubilityBar"
+                                            class="text-[11px] font-mono text-sky-700 mt-1 pt-1 border-t border-stone-100">
+                                            ความเข้มข้น: 493 g/L (ลิมิตละลาย ~710 g/L)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-t border-sky-200">
+                                    <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
+                                            class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                    <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
+                                        <span id="dropMgDrops">12</span> <span
+                                            class="text-xl font-sans font-semibold">หยด</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        (ค่าแม่นยำ <span id="dropMgExactDrops">12.2</span> หยด หรือ <strong
+                                            id="dropMgMl" class="text-stone-900">0.61</strong> <strong>ml</strong>)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottle 2: Ca (Calcium Lactate) -->
+                            <div
+                                class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span
+                                            class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
+                                            ขวดที่ 2 : แคลเซียม (Ca)
+                                        </span>
+                                        <span id="dropCaStrengthTag"
+                                            class="text-xs font-mono font-bold text-amber-800 bg-white px-2 py-0.5 rounded border border-amber-200">
+                                            1 หยด = +6 ppm/100ml
+                                        </span>
+                                    </div>
+                                    <h4 id="dropCaSaltName" class="text-xl font-bold text-stone-900 mt-3">แคลเซียมแลคเตท
+                                    </h4>
+
+                                    <div class="mt-4 p-3.5 bg-white rounded-xl border border-amber-200">
+                                        <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
+                                                class="dropBottleVolText font-bold">100</span> ml:</div>
+                                        <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                            ใช้สาร <span id="dropCaGrams" class="text-amber-700 font-mono text-2xl">5.54
+                                                g</span>
+                                        </div>
+                                        <div class="text-xs text-stone-500">ใช้น้ำอุ่นละลาย แล้วเติมน้ำให้ครบ <span
+                                                class="dropBottleVolText font-semibold">100</span> ml</div>
+                                        <div id="dropCaSolubilityBar"
+                                            class="text-[11px] font-mono text-amber-700 mt-1 pt-1 border-t border-stone-100">
+                                            ความเข้มข้น: 55 g/L (ลิมิตละลาย ~66 g/L)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-t border-amber-200">
+                                    <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
+                                            class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                    <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
+                                        <span id="dropCaDrops">23</span> <span
+                                            class="text-xl font-sans font-semibold">หยด</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        (ค่าแม่นยำ <span id="dropCaExactDrops">22.5</span> หยด หรือ <strong
+                                            id="dropCaMl" class="text-stone-900">1.13</strong> <strong>ml</strong>)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottle 3: Na (Baking Soda) -->
+                            <div
+                                class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span
+                                            class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
+                                            ขวดที่ 3 : บัฟเฟอร์ (Buffer)
+                                        </span>
+                                        <span id="dropNaStrengthTag"
+                                            class="text-xs font-mono font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                                            1 หยด = +12 ppm/100ml
+                                        </span>
+                                    </div>
+                                    <h4 id="dropNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา
+                                        (Baking Soda)</h4>
+
+                                    <div class="mt-4 p-3.5 bg-white rounded-xl border border-emerald-200">
+                                        <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
+                                                class="dropBottleVolText font-bold">100</span> ml:</div>
+                                        <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                            ใช้สาร <span id="dropNaGrams"
+                                                class="text-emerald-700 font-mono text-2xl">8.06
+                                                g</span>
+                                        </div>
+                                        <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span
+                                                class="dropBottleVolText font-semibold">100</span> ml</div>
+                                        <div id="dropNaSolubilityBar"
+                                            class="text-[11px] font-mono text-emerald-700 mt-1 pt-1 border-t border-stone-100">
+                                            ความเข้มข้น: 81 g/L (ลิมิตละลาย ~96 g/L)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 pt-4 border-t border-emerald-200">
+                                    <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
+                                            class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                    <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
+                                        <span id="dropNaDrops">14</span> <span
+                                            class="text-xl font-sans font-semibold">หยด</span>
+                                    </div>
+                                    <div class="text-base font-mono text-stone-600 mt-1">
+                                        (ค่าแม่นยำ <span id="dropNaExactDrops">13.5</span> หยด หรือ <strong
+                                            id="dropNaMl" class="text-stone-900">0.68</strong> <strong>ml</strong>)
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- All-in-One Bottle Shortcut -->
+                        <div class="bg-stone-100 border border-stone-300 rounded-2xl p-6">
+                            <div class="flex items-center gap-2 text-stone-900 font-bold text-lg mb-2">
+                                <i class="ph-fill ph-sparkle text-amber-500 text-xl"></i>
+                                <span>สูตรทางลัด: ผสมทั้ง 3 ตัวรวมในขวด <span
+                                        class="dropBottleVolText font-mono">100</span>
+                                    ml ขวดเดียวจบ</span>
+                            </div>
+                            <p class="text-base text-stone-700 leading-relaxed">
+                                หากไม่อยากแยก 3 ขวด ให้ชั่ง
+                                <strong
+                                    class="text-sky-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">ดีเกลือฝรั่ง
+                                    <span id="singleMixMg">1.00g</span></strong> +
+                                <strong
+                                    class="text-amber-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">แคลเซียมแลคเตท
+                                    <span id="singleMixCa">0.69g</span></strong> +
+                                <strong
+                                    class="text-emerald-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">เบกกิ้งโซดา
+                                    <span id="singleMixNa">0.45g</span></strong>
+                                ผสมน้ำบริสุทธิ์ในขวด <span class="dropBottleVolText font-bold">100</span> ml
+                            </p>
+                            <div
+                                class="mt-3 p-3.5 bg-white rounded-xl border border-stone-200 flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-base font-medium text-stone-800">
+                                    👉 เวลาชงกาแฟน้ำ <strong class="brewVolText font-mono">600</strong> ml
+                                    ให้ตวงหัวเชื้อขวดนี้ใส่ลงไป:
+                                </span>
+                                <span class="text-xl font-bold font-mono text-stone-900">
+                                    <span id="singleMixUseMl" class="text-amber-600 underline">6.0 ml</span> (ประมาณ
+                                    <span id="singleMixUseDrops">120</span> หยด)
+                                    <span class="text-xs font-sans font-normal text-stone-500 ml-1">ชงได้ <span
+                                            id="singleBottleTotalBrews">16</span> กา</span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Action: Copy Recipe -->
+                    <div
+                        class="mt-8 pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="text-sm text-stone-500">
+                            *คำนวณตามน้ำหนักโมเลกุลจริง: ดีเกลือฝรั่ง (246.47 g/mol), Calcium Lactate Pentahydrate
+                            (308.30
+                            g/mol), Baking Soda (84.01 g/mol)
+                        </div>
+                        <button onclick="copyRecipeToClipboard()"
+                            class="w-full sm:w-auto py-3 px-6 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-base flex items-center justify-center gap-2 transition shadow-sm shrink-0">
+                            <i class="ph ph-copy text-xl"></i>
+                            <span id="copyBtnText">คัดลอกสูตรน้ำชงกาแฟนี้</span>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+        </div><!-- End of #pageCalculator -->
+
+        <!-- ==========================================
+             TAB 2: USER GUIDE & MINERAL REFERENCE
+        =========================================== -->
+        <div id="pageGuide" class="space-y-8 hidden">
+
+            <!-- Hero Intro Section -->
+            <section class="bg-stone-900 text-white rounded-3xl p-6 sm:p-10 shadow-sm relative overflow-hidden">
+                <div class="max-w-3xl space-y-3">
+                    <span
+                        class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                        <i class="ph-fill ph-book-open-text"></i>
+                        USER GUIDE · คู่มือพื้นฐานก่อนเริ่มผสมน้ำชงกาแฟ
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-bold tracking-tight leading-tight">
+                        แร่ธาตุแต่ละตัวคืออะไร? ช่วยดึงรสชาติไหน? และใช้อะไรทดแทนกันได้บ้าง?
+                    </h2>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+                        ในกาแฟดริป 1 แก้ว มีน้ำเป็นส่วนประกอบถึง <strong class="text-white">98.5%</strong> น้ำบริสุทธิ์
+                        (0 ppm) จะสกัดรสชาติได้ไม่สมดุลและเปรี้ยวโดด การเติมแร่ธาตุหลัก 3
+                        กลุ่มลงในน้ำบริสุทธิ์เปรียบเสมือนการตั้ง <strong class="text-amber-300">"Equalizer
+                            ของรสชาติ"</strong> ให้เหมาะกับเมล็ดกาแฟของคุณที่สุด
                     </p>
                 </div>
 
-                <!-- Mode Switcher Pill -->
-                <div class="bg-stone-800 p-1.5 rounded-2xl flex gap-1 self-start md:self-center">
-                    <button onclick="switchResultMode('direct')" id="tabDirect"
-                        class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all bg-white text-stone-900 shadow">
-                        เทผสมใส่กาดริป / เหยือก
-                    </button>
-                    <button onclick="switchResultMode('dropper')" id="tabDropper"
-                        class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all text-stone-300 hover:text-white">
-                        ผสมใส่ขวด Dropper
-                    </button>
-                </div>
-            </div>
-
-            <div class="p-6 sm:p-8">
-
-                <!-- ==========================================
-                     MODE 1: DIRECT MIX INTO KETTLE / PITCHER
-                =========================================== -->
-                <div id="viewDirect" class="space-y-6">
-                    <div
-                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-stone-200">
-                        <div>
-                            <h3 class="text-xl font-bold text-stone-900">
-                                ชั่งผงแร่ธาตุเทลงในน้ำบริสุทธิ์ <span
-                                    class="brewVolText font-mono text-sky-700">600</span> ml โดยตรง
-                            </h3>
-                            <p class="text-sm text-stone-500">
-                                สารแต่ละตัวใช้ปริมาณกรัมไม่เท่ากัน เนื่องจากน้ำหนักโมเลกุลต่างกัน (โดยเฉพาะ Calcium
-                                Lactate จะมีน้ำหนักมากกว่า)
-                            </p>
+                <!-- 3 Core Concepts Pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                    <div class="bg-stone-800/90 border border-stone-700 rounded-2xl p-5">
+                        <div class="flex items-center gap-2.5 text-sky-400 font-bold text-base mb-1.5">
+                            <i class="ph-fill ph-drop text-xl"></i>
+                            <span>1. น้ำตั้งต้น (Base Water)</span>
                         </div>
-                    </div>
-
-                    <!-- 3 Big Mineral Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-                        <!-- Card 1: Epsom Salt -->
-                        <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <span
-                                    class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
-                                    1. แมกนีเซียม (Mg)
-                                </span>
-                                <h4 id="directMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง
-                                    (Epsom Salt)</h4>
-                                <p class="text-sm text-stone-500 mt-1">
-                                    ให้ค่า Mg = <strong id="directMgPpmText"
-                                        class="font-mono text-stone-800">40.5</strong> ppm
-                                </p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-sky-200/80">
-                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
-                                <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
-                                    <span id="directMgGrams">0.060</span> <span
-                                        class="text-xl font-normal text-stone-600">กรัม (g)</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    หรือ <strong id="directMgMg" class="text-stone-900">59.9</strong> มิลลิกรัม (mg)
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2: Calcium Lactate -->
-                        <div
-                            class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <span
-                                    class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
-                                    2. แคลเซียม (Ca)
-                                </span>
-                                <h4 id="directCaSaltName" class="text-xl font-bold text-stone-900 mt-3">แคลเซียมแลคเตท
-                                    (Calcium Lactate)</h4>
-                                <p class="text-sm text-stone-500 mt-1">
-                                    ให้ค่า Ca = <strong id="directCaPpmText"
-                                        class="font-mono text-stone-800">22.5</strong> ppm
-                                </p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-amber-200/80">
-                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
-                                <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
-                                    <span id="directCaGrams">0.042</span> <span
-                                        class="text-xl font-normal text-stone-600">กรัม (g)</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    หรือ <strong id="directCaMg" class="text-stone-900">41.6</strong> มิลลิกรัม (mg)
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3: Baking Soda -->
-                        <div
-                            class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <span
-                                    class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
-                                    3. บัฟเฟอร์ (Buffer)
-                                </span>
-                                <h4 id="directNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา
-                                    (Baking Soda)</h4>
-                                <p class="text-sm text-stone-500 mt-1">
-                                    ให้ค่า KH = <strong id="directNaPpmText"
-                                        class="font-mono text-stone-800">27.0</strong> ppm
-                                </p>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-emerald-200/80">
-                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
-                                <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
-                                    <span id="directNaGrams">0.027</span> <span
-                                        class="text-xl font-normal text-stone-600">กรัม (g)</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    หรือ <strong id="directNaMg" class="text-stone-900">27.2</strong> มิลลิกรัม (mg)
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Summary Bar -->
-                    <div
-                        class="bg-stone-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="text-sm text-stone-600">
-                            💡 <strong>คำแนะนำ:</strong> หากชั่งใส่กาดริป 600ml โดยตรง น้ำหนักจะน้อยมาก (ระดับ 0.0x
-                            กรัม) แนะนำให้กดเลือกเมนู <strong>"ผสมใส่ขวด Dropper"</strong> ด้านบน หรือผสมใส่แกลลอน 5,000
-                            ml จะชั่งง่ายกว่ามากครับ
-                        </div>
-                        <div class="shrink-0 text-right font-mono">
-                            <span class="text-xs text-stone-500 block">น้ำหนักผงรวมทั้งหมด</span>
-                            <span class="text-lg font-bold text-stone-900"><span id="directTotalGrams">0.129</span> g
-                                (<span id="directTotalMg">128.7</span> mg)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ==========================================
-                     MODE 2: DROPPER CONCENTRATE VIEW
-                =========================================== -->
-                <div id="viewDropper" class="space-y-6 hidden">
-
-                    <!-- Dropper Settings Bar (Size & Concentration Level) -->
-                    <div class="bg-stone-100 border border-stone-200 rounded-2xl p-5 space-y-5">
-
-                        <!-- Row 1: Bottle Size -->
-                        <div
-                            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-200/80">
-                            <div>
-                                <h3 class="text-lg font-bold text-stone-900">1. เลือกขนาดขวด Dropper ที่คุณใช้ทำหัวเชื้อ
-                                </h3>
-                                <p class="text-sm text-stone-600">ขนาดขวดสำหรับละลายผงแร่ธาตุเก็บไว้หยดลงกาดริป <strong
-                                        class="brewVolText">600</strong> ml</p>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="setDropperSize(30)" id="dropSize-30"
-                                    class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">30
-                                    ml</button>
-                                <button onclick="setDropperSize(50)" id="dropSize-50"
-                                    class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">50
-                                    ml</button>
-                                <button onclick="setDropperSize(100)" id="dropSize-100"
-                                    class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-900 bg-stone-900 text-white font-bold transition">100
-                                    ml</button>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Concentration Level -->
-                        <div class="space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                <div>
-                                    <h3 class="text-lg font-bold text-stone-900">2.
-                                        เลือกระดับความเข้มข้นของหัวเชื้อในขวด</h3>
-                                    <p class="text-sm text-stone-600">ยิ่งเข้มข้นสูง ยิ่งใช้จำนวนหยดน้อยลง
-                                        (คำนวณตามจุดอิ่มตัวการละลายน้ำของสารแต่ละตัว)</p>
-                                </div>
-                                <span id="concModeBadge"
-                                    class="text-xs font-mono font-semibold bg-amber-100 text-amber-900 px-3 py-1 rounded-full self-start sm:self-center">
-                                    หยดน้อยที่สุด (ตามลิมิตการละลายของแต่ละสาร)
-                                </span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                                <button onclick="setDropperConc('low')" id="concBtn-low"
-                                    class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
-                                    <div class="font-bold text-base">ต่ำ (มาตรฐาน)</div>
-                                    <div class="text-xs text-stone-500 mt-0.5">ละลายง่ายมาก คุมหยดละเอียด</div>
-                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +1 ppm /
-                                        100ml</div>
-                                </button>
-
-                                <button onclick="setDropperConc('medium')" id="concBtn-medium"
-                                    class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
-                                    <div class="font-bold text-base">ปานกลาง (เข้ม 2.5x)</div>
-                                    <div class="text-xs text-stone-500 mt-0.5">ลดจำนวนหยดลง 2.5 เท่า</div>
-                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +2.5 ppm /
-                                        100ml</div>
-                                </button>
-
-                                <button onclick="setDropperConc('high')" id="concBtn-high"
-                                    class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white text-stone-900 hover:border-stone-400 transition">
-                                    <div class="font-bold text-base">สูง (เท่ากันทุกขวด 5x)</div>
-                                    <div class="text-xs text-stone-500 mt-0.5">เพดานสูงสุดของ Calcium Lactate</div>
-                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +5 ppm /
-                                        100ml</div>
-                                </button>
-
-                                <button onclick="setDropperConc('max')" id="concBtn-max"
-                                    class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-900 bg-stone-900 text-white transition">
-                                    <div class="font-bold text-base flex items-center justify-between">
-                                        <span>สูงสุดแยกตามสาร</span>
-                                        <span
-                                            class="text-[11px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-md font-bold">หยดน้อยสุด</span>
-                                    </div>
-                                    <div class="text-xs text-stone-300 mt-0.5">อัดเต็มลิมิตการละลายของแต่ละตัว</div>
-                                    <div class="text-xs font-mono font-semibold text-amber-300 mt-1">Mg x20 | Ca x9 | Na
-                                        x24</div>
-                                </button>
-                            </div>
-
-                            <!-- Solubility Technical Info Box -->
-                            <div
-                                class="bg-white border border-stone-200 rounded-xl p-3.5 text-xs sm:text-sm text-stone-600 flex items-start gap-2.5">
-                                <i class="ph-fill ph-info text-stone-800 text-lg shrink-0 mt-0.5"></i>
-                                <div id="concExplainText">
-                                    <strong>โหมดความเข้มข้นสูงสุดแยกตามสาร (Max Safe Solubility ที่ 25°C):</strong>
-                                    สารแต่ละชนิดละลายน้ำได้ไม่เท่ากัน —
-                                    <strong>ดีเกลือฝรั่ง</strong>ละลายได้สูงมาก (~70g/100ml) เราตั้งไว้ที่
-                                    <strong>49.3g/100ml</strong>,
-                                    ส่วน<strong>แคลเซียมแลคเตท</strong>ละลายได้จำกัด (~6.5g/100ml) เราตั้งไว้ที่
-                                    <strong>5.54g/100ml</strong> (แนะนำใช้น้ำอุ่นช่วยละลาย)
-                                    และ<strong>เบกกิ้งโซดา</strong>ละลายได้ ~9.6g/100ml เราตั้งไว้ที่
-                                    <strong>8.06g/100ml</strong> เพื่อไม่ให้ตกผลึกนอนก้นขวดครับ
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3 Dropper Bottle Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-                        <!-- Bottle 1: Mg -->
-                        <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span
-                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
-                                        ขวดที่ 1 : แมกนีเซียม (Mg)
-                                    </span>
-                                    <span id="dropMgStrengthTag"
-                                        class="text-xs font-mono font-bold text-sky-700 bg-white px-2 py-0.5 rounded border border-sky-200">
-                                        1 หยด = +20 ppm/100ml
-                                    </span>
-                                </div>
-                                <h4 id="dropMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง
-                                    (Epsom Salt)</h4>
-
-                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-sky-200">
-                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
-                                            class="dropBottleVolText font-bold">100</span> ml:</div>
-                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
-                                        ใช้สาร <span id="dropMgGrams" class="text-sky-700 font-mono text-2xl">49.26
-                                            g</span>
-                                    </div>
-                                    <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span
-                                            class="dropBottleVolText font-semibold">100</span> ml</div>
-                                    <div id="dropMgSolubilityBar"
-                                        class="text-[11px] font-mono text-sky-700 mt-1 pt-1 border-t border-stone-100">
-                                        ความเข้มข้น: 493 g/L (ลิมิตละลาย ~710 g/L)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5 pt-4 border-t border-sky-200">
-                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
-                                        class="brewVolText font-mono font-bold">600</span> ml:</div>
-                                <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
-                                    <span id="dropMgDrops">12</span> <span
-                                        class="text-xl font-sans font-semibold">หยด</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    (ค่าแม่นยำ <span id="dropMgExactDrops">12.2</span> หยด หรือ <strong id="dropMgMl"
-                                        class="text-stone-900">0.61</strong> <strong>ml</strong>)
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bottle 2: Ca (Calcium Lactate) -->
-                        <div
-                            class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span
-                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
-                                        ขวดที่ 2 : แคลเซียม (Ca)
-                                    </span>
-                                    <span id="dropCaStrengthTag"
-                                        class="text-xs font-mono font-bold text-amber-800 bg-white px-2 py-0.5 rounded border border-amber-200">
-                                        1 หยด = +6 ppm/100ml
-                                    </span>
-                                </div>
-                                <h4 id="dropCaSaltName" class="text-xl font-bold text-stone-900 mt-3">แคลเซียมแลคเตท
-                                </h4>
-
-                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-amber-200">
-                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
-                                            class="dropBottleVolText font-bold">100</span> ml:</div>
-                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
-                                        ใช้สาร <span id="dropCaGrams" class="text-amber-700 font-mono text-2xl">5.54
-                                            g</span>
-                                    </div>
-                                    <div class="text-xs text-stone-500">ใช้น้ำอุ่นละลาย แล้วเติมน้ำให้ครบ <span
-                                            class="dropBottleVolText font-semibold">100</span> ml</div>
-                                    <div id="dropCaSolubilityBar"
-                                        class="text-[11px] font-mono text-amber-700 mt-1 pt-1 border-t border-stone-100">
-                                        ความเข้มข้น: 55 g/L (ลิมิตละลาย ~66 g/L)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5 pt-4 border-t border-amber-200">
-                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
-                                        class="brewVolText font-mono font-bold">600</span> ml:</div>
-                                <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
-                                    <span id="dropCaDrops">23</span> <span
-                                        class="text-xl font-sans font-semibold">หยด</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    (ค่าแม่นยำ <span id="dropCaExactDrops">22.5</span> หยด หรือ <strong id="dropCaMl"
-                                        class="text-stone-900">1.13</strong> <strong>ml</strong>)
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bottle 3: Na (Baking Soda) -->
-                        <div
-                            class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span
-                                        class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
-                                        ขวดที่ 3 : บัฟเฟอร์ (Buffer)
-                                    </span>
-                                    <span id="dropNaStrengthTag"
-                                        class="text-xs font-mono font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
-                                        1 หยด = +12 ppm/100ml
-                                    </span>
-                                </div>
-                                <h4 id="dropNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา
-                                    (Baking Soda)</h4>
-
-                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-emerald-200">
-                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span
-                                            class="dropBottleVolText font-bold">100</span> ml:</div>
-                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
-                                        ใช้สาร <span id="dropNaGrams" class="text-emerald-700 font-mono text-2xl">8.06
-                                            g</span>
-                                    </div>
-                                    <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span
-                                            class="dropBottleVolText font-semibold">100</span> ml</div>
-                                    <div id="dropNaSolubilityBar"
-                                        class="text-[11px] font-mono text-emerald-700 mt-1 pt-1 border-t border-stone-100">
-                                        ความเข้มข้น: 81 g/L (ลิมิตละลาย ~96 g/L)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-5 pt-4 border-t border-emerald-200">
-                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span
-                                        class="brewVolText font-mono font-bold">600</span> ml:</div>
-                                <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
-                                    <span id="dropNaDrops">14</span> <span
-                                        class="text-xl font-sans font-semibold">หยด</span>
-                                </div>
-                                <div class="text-base font-mono text-stone-600 mt-1">
-                                    (ค่าแม่นยำ <span id="dropNaExactDrops">13.5</span> หยด หรือ <strong id="dropNaMl"
-                                        class="text-stone-900">0.68</strong> <strong>ml</strong>)
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- All-in-One Bottle Shortcut -->
-                    <div class="bg-stone-100 border border-stone-300 rounded-2xl p-6">
-                        <div class="flex items-center gap-2 text-stone-900 font-bold text-lg mb-2">
-                            <i class="ph-fill ph-sparkle text-amber-500 text-xl"></i>
-                            <span>สูตรทางลัด: ผสมทั้ง 3 ตัวรวมในขวด <span class="dropBottleVolText font-mono">100</span>
-                                ml ขวดเดียวจบ</span>
-                        </div>
-                        <p class="text-base text-stone-700 leading-relaxed">
-                            หากไม่อยากแยก 3 ขวด ให้ชั่ง
-                            <strong
-                                class="text-sky-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">ดีเกลือฝรั่ง
-                                <span id="singleMixMg">1.00g</span></strong> +
-                            <strong
-                                class="text-amber-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">แคลเซียมแลคเตท
-                                <span id="singleMixCa">0.69g</span></strong> +
-                            <strong
-                                class="text-emerald-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">เบกกิ้งโซดา
-                                <span id="singleMixNa">0.45g</span></strong>
-                            ผสมน้ำบริสุทธิ์ในขวด <span class="dropBottleVolText font-bold">100</span> ml
+                        <p class="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                            ต้องเริ่มจาก <strong class="text-white">น้ำที่มีค่า TDS ใกล้ 0 ppm</strong> เช่น
+                            น้ำกลั่นบริสุทธิ์, น้ำกรองระบบ RO หรือน้ำดื่มขวดฝาสีฟ้าที่เป็นน้ำ RO
+                            เพื่อไม่ให้แร่ธาตุเดิมในน้ำมากวนสูตรที่เราคำนวณ
                         </p>
-                        <div
-                            class="mt-3 p-3.5 bg-white rounded-xl border border-stone-200 flex flex-wrap items-center justify-between gap-2">
-                            <span class="text-base font-medium text-stone-800">
-                                👉 เวลาชงกาแฟน้ำ <strong class="brewVolText font-mono">600</strong> ml
-                                ให้ตวงหัวเชื้อขวดนี้ใส่ลงไป:
-                            </span>
-                            <span class="text-xl font-bold font-mono text-stone-900">
-                                <span id="singleMixUseMl" class="text-amber-600 underline">6.0 ml</span> (ประมาณ <span
-                                    id="singleMixUseDrops">120</span> หยด)
-                                <span class="text-xs font-sans font-normal text-stone-500 ml-1">ชงได้ <span
-                                        id="singleBottleTotalBrews">16</span> กา</span>
-                            </span>
+                    </div>
+
+                    <div class="bg-stone-800/90 border border-stone-700 rounded-2xl p-5">
+                        <div class="flex items-center gap-2.5 text-amber-400 font-bold text-base mb-1.5">
+                            <i class="ph-fill ph-magnet text-xl"></i>
+                            <span>2. ความกระด้าง GH (Mg + Ca)</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                            ไอออนบวกของ <strong class="text-white">แมกนีเซียม (Mg²⁺)</strong> และ <strong
+                                class="text-white">แคลเซียม (Ca²⁺)</strong> ทำหน้าที่เหมือน "แม่เหล็ก"
+                            เกาะดึงสารให้กลิ่นผลไม้ ความเปรี้ยว ความหวาน และบอดี้ออกจากผงกาแฟ
+                        </p>
+                    </div>
+
+                    <div class="bg-stone-800/90 border border-stone-700 rounded-2xl p-5">
+                        <div class="flex items-center gap-2.5 text-emerald-400 font-bold text-base mb-1.5">
+                            <i class="ph-fill ph-scales text-xl"></i>
+                            <span>3. ค่าด่างบัฟเฟอร์ KH (HCO₃⁻)</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                            ไอออนไบคาร์บอเนตทำหน้าที่เป็น <strong class="text-white">"ตัวคุมสมดุลกรด (pH
+                                Buffer)"</strong>
+                            ช่วยตัดความเปรี้ยวแหลมบาดคอให้กลมกล่อมและชูรสหวานตามธรรมชาติของเมล็ดกาแฟ
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deep Dive: 3 Mineral Groups & Substitutes -->
+            <section class="space-y-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">MINERAL DEEP DIVE &
+                        SUBSTITUTES</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-stone-900">เจาะลึกแร่ธาตุทั้ง 3 กลุ่ม
+                        และสารที่ใช้ทดแทนกันได้</h3>
+                    <p class="text-sm text-stone-500">หากหาซื้อสารตัวหลักไม่ได้
+                        คุณสามารถใช้สารทดแทนในกลุ่มเดียวกันแล้วเปลี่ยนตัวเลือกในโปรแกรมคำนวณได้ทันที</p>
+                </div>
+
+                <!-- GROUP 1: MAGNESIUM (Mg) -->
+                <div class="bg-white border-2 border-sky-200 rounded-3xl overflow-hidden shadow-sm">
+                    <div
+                        class="bg-sky-50/80 border-b border-sky-200 px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-11 h-11 rounded-2xl bg-sky-600 text-white flex items-center justify-center font-bold font-mono text-lg shadow-sm">
+                                Mg²⁺
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-sky-700">กลุ่มที่ 1 ·
+                                    ความกระด้าง (General Hardness)</span>
+                                <h4 class="text-lg sm:text-xl font-bold text-stone-900">แมกนีเซียม (Magnesium) —
+                                    ตัวดึงกลิ่นหอม & ความเปรี้ยวสดใส</h4>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold bg-sky-100 text-sky-800 px-3 py-1.5 rounded-full">
+                            โดดเด่นเรื่อง: Floral · Fruity · Bright Acidity
+                        </span>
+                    </div>
+
+                    <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- Left: Role & How it works -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div>
+                                <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400 mb-1">คืออะไร &
+                                    ช่วยอะไรในกาแฟ?</h5>
+                                <p class="text-sm sm:text-base text-stone-700 leading-relaxed">
+                                    ไอออนแมกนีเซียมมีขนาดเล็กและมีความหนาแน่นประจุไฟฟ้าสูง
+                                    จึงจับกับสารประกอบกลิ่นรสขนาดเล็กที่มีออกซิเจนเก่งมาก ช่วยดึง <strong>กลิ่นดอกไม้
+                                        (Floral), กลิ่นผลไม้ตระกูลซิตรัส/เบอร์รี่ และกรดผลไม้ที่สดใสฉ่ำน้ำ (Juicy
+                                        Acidity)</strong> ออกมาได้อย่างชัดเจน
+                                </p>
+                            </div>
+                            <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2 text-sm">
+                                <div class="font-bold text-stone-900">💡 เหมาะกับกาแฟแบบไหน?</div>
+                                <ul class="text-stone-600 space-y-1 list-disc list-inside">
+                                    <li>กาแฟคั่วอ่อน (Light Roast) และโพรเซส <strong>Washed</strong></li>
+                                    <li>เมล็ดเอธิโอเปีย, เคนยา, ปานามา เกอิชา ที่เน้นความซับซ้อน</li>
+                                    <li>หากใส่มากเกินไป: อาจดึงรสเปรี้ยวแหลมหรือขมฝาดปลายลิ้นออกมาได้</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Right: Main Salt & Alternatives -->
+                        <div class="lg:col-span-7 space-y-4">
+                            <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400">สารหลัก &
+                                สารที่ใช้ทดแทนได้</h5>
+
+                            <!-- Primary: Epsom Salt -->
+                            <div class="border-2 border-sky-500 bg-sky-50/30 rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-sky-600 text-white px-2.5 py-0.5 rounded-md">สารหลัก
+                                            (แนะนำ)</span>
+                                        <span class="font-bold text-base sm:text-lg text-stone-900">ดีเกลือฝรั่ง (Epsom
+                                            Salt)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: MgSO₄·7H₂O</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    ชื่อทางเคมีคือ <strong>แมกนีเซียมซัลเฟต (Magnesium Sulfate Heptahydrate)</strong>
+                                    หาซื้อง่ายมาก ราคาถูก ละลายน้ำได้ดีเยี่ยม (~71g/100ml) ให้รสชาติที่คมชัด สว่าง
+                                    และความเปรี้ยวที่พุ่งชัด <em>(ต้องเลือกซื้อเกรดอาหาร Food Grade หรือ USP Grade
+                                        เท่านั้น)</em>
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-sky-200/70 text-xs">
+                                    <span class="font-mono text-sky-800">1 ppm CaCO₃ ใช้ = <strong>2.463
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('mg', 'epsom')"
+                                        class="font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1">
+                                        <span>ใช้อยู่เป็นค่าเริ่มต้นในโปรแกรม</span>
+                                        <i class="ph-bold ph-check-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Substitute: Magnesium Chloride -->
+                            <div class="border border-stone-200 bg-white rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-stone-200 text-stone-800 px-2.5 py-0.5 rounded-md">สารทดแทน
+                                            100%</span>
+                                        <span class="font-bold text-base text-stone-900">แมกนีเซียมคลอไรด์ (Magnesium
+                                            Chloride)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: MgCl₂·6H₂O</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    ใช้แทนดีเกลือฝรั่งได้ทันที! ข้อดีคือได้ประจุลบเป็น <strong>คลอไรด์ (Cl⁻) แทนซัลเฟต
+                                        (SO₄²⁻)</strong> ซึ่งช่วยให้เนื้อสัมผัสของกาแฟ <strong>นุ่มนวล กลมมนขึ้น
+                                        และลดความแห้งฝาดปลายลิ้น</strong> สายแข่งขันนิยมใช้มาก (ข้อควรระวัง:
+                                    ผงดูดความชื้นจากอากาศไว ต้องปิดฝาให้สนิท)
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-stone-100 text-xs">
+                                    <span class="font-mono text-stone-600">1 ppm CaCO₃ ใช้ = <strong>2.031
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('mg', 'mgcl2')"
+                                        class="font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                                        <span>กดสลับใช้สารนี้ในโปรแกรม</span>
+                                        <i class="ph-bold ph-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Bottom Action: Copy Recipe -->
-                <div
-                    class="mt-8 pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-sm text-stone-500">
-                        *คำนวณตามน้ำหนักโมเลกุลจริง: ดีเกลือฝรั่ง (246.47 g/mol), Calcium Lactate Pentahydrate (308.30
-                        g/mol), Baking Soda (84.01 g/mol)
+                <!-- GROUP 2: CALCIUM (Ca) -->
+                <div class="bg-white border-2 border-amber-200 rounded-3xl overflow-hidden shadow-sm">
+                    <div
+                        class="bg-amber-50/80 border-b border-amber-200 px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-11 h-11 rounded-2xl bg-amber-600 text-white flex items-center justify-center font-bold font-mono text-lg shadow-sm">
+                                Ca²⁺
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-800">กลุ่มที่ 2 ·
+                                    ความกระด้าง (General Hardness)</span>
+                                <h4 class="text-lg sm:text-xl font-bold text-stone-900">แคลเซียม (Calcium) —
+                                    ตัวสร้างบอดี้นุ่มแน่น & ความหวานครีมมี่</h4>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold bg-amber-100 text-amber-900 px-3 py-1.5 rounded-full">
+                            โดดเด่นเรื่อง: Creamy Body · Caramel Sweetness · Long Finish
+                        </span>
                     </div>
-                    <button onclick="copyRecipeToClipboard()"
-                        class="w-full sm:w-auto py-3 px-6 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-base flex items-center justify-center gap-2 transition shadow-sm shrink-0">
-                        <i class="ph ph-copy text-xl"></i>
-                        <span id="copyBtnText">คัดลอกสูตรน้ำชงกาแฟนี้</span>
+
+                    <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- Left: Role & How it works -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div>
+                                <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400 mb-1">คืออะไร &
+                                    ช่วยอะไรในกาแฟ?</h5>
+                                <p class="text-sm sm:text-base text-stone-700 leading-relaxed">
+                                    ไอออนแคลเซียมมีขนาดอะตอมใหญ่กว่าแมกนีเซียม
+                                    ช่วยดึงสารประกอบโมเลกุลใหญ่ในกาแฟออกมาได้ดี มอบ <strong>เนื้อสัมผัสที่อิ่มแน่น
+                                        นุ่มลื่นเต็มปาก (Heavy & Creamy Mouthfeel)</strong> เสริมโทนรสหวานแบบคาราเมล
+                                    ช็อกโกแลต ถั่ว และลดความเปรี้ยวแหลมให้กลมมนขึ้น
+                                </p>
+                            </div>
+                            <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 space-y-2 text-sm">
+                                <div class="font-bold text-stone-900">💡 เหมาะกับกาแฟแบบไหน?</div>
+                                <ul class="text-stone-600 space-y-1 list-disc list-inside">
+                                    <li>กาแฟโพรเซส <strong>Natural / Honey</strong> ที่ต้องการความหวานฉ่ำและบอดี้แน่น
+                                    </li>
+                                    <li>กาแฟคั่วกลาง–เข้ม หรือคนที่ชอบดื่มกาแฟสกัดนุ่มๆ ไม่เปรี้ยวโดด</li>
+                                    <li>ใช้คู่กับ Mg ในอัตราส่วนสมดุลเพื่อให้กาแฟมีมิติครบถ้วน</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Right: Main Salt & Alternatives -->
+                        <div class="lg:col-span-7 space-y-4">
+                            <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400">สารหลัก &
+                                สารที่ใช้ทดแทนได้</h5>
+
+                            <!-- Primary: Calcium Lactate -->
+                            <div class="border-2 border-amber-500 bg-amber-50/30 rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-amber-600 text-white px-2.5 py-0.5 rounded-md">สารหลัก
+                                            (แนะนำ)</span>
+                                        <span class="font-bold text-base sm:text-lg text-stone-900">แคลเซียมแลคเตท
+                                            (Calcium Lactate)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: Ca(C₃H₅O₃)₂·5H₂O</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    โดดเด่นมากเพราะมี <strong>"แลคเตทไอออน"</strong> ซึ่งช่วยให้สัมผัสของน้ำมีความ
+                                    <strong>นุ่มครีมมี่ (Silky & Milky) และชูรสหวานได้ดีเยี่ยม</strong>
+                                    โดยไม่เพิ่มซัลเฟตหรือคลอไรด์ <em>(หมายเหตุ:
+                                        มีมวลโมเลกุลใหญ่จึงใช้ปริมาณกรัมมากกว่าสารอื่น
+                                        และหากทำขวดหัวเชื้อเข้มข้นแนะนำให้ใช้น้ำอุ่นช่วยละลาย)</em>
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-amber-200/70 text-xs">
+                                    <span class="font-mono text-amber-900">1 ppm CaCO₃ ใช้ = <strong>3.080 mg/L</strong>
+                                        (แบบ Anhydrous ใช้ 2.180 mg/L)</span>
+                                    <button onclick="selectChemAndGoToCalc('ca', 'lactate_pentahydrate')"
+                                        class="font-bold text-amber-800 hover:text-amber-950 flex items-center gap-1">
+                                        <span>ใช้อยู่เป็นค่าเริ่มต้นในโปรแกรม</span>
+                                        <i class="ph-bold ph-check-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Substitute 1: Calcium Chloride -->
+                            <div class="border border-stone-200 bg-white rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-stone-200 text-stone-800 px-2.5 py-0.5 rounded-md">สารทดแทนยอดนิยม</span>
+                                        <span class="font-bold text-base text-stone-900">แคลเซียมคลอไรด์ (Calcium
+                                            Chloride)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: CaCl₂·2H₂O</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    เป็นสารแคลเซียมมาตรฐานที่ละลายน้ำง่ายมาก (~74.5g/100ml)
+                                    ใช้ปริมาณผงน้อยกว่าแคลเซียมแลคเตทถึงครึ่งหนึ่ง ให้บอดี้ที่หนักแน่นและรสชาติสะอาดคลีน
+                                    เหมาะมากสำหรับคนที่ไม่ต้องการใช้น้ำอุ่นละลายหัวเชื้อ
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-stone-100 text-xs">
+                                    <span class="font-mono text-stone-600">1 ppm CaCO₃ ใช้ = <strong>1.469
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('ca', 'cacl2_dihydrate')"
+                                        class="font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                                        <span>กดสลับใช้สารนี้ในโปรแกรม</span>
+                                        <i class="ph-bold ph-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Substitute 2: Gypsum -->
+                            <div class="border border-stone-200 bg-white rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-stone-200 text-stone-800 px-2.5 py-0.5 rounded-md">สารทดแทนทางเลือก</span>
+                                        <span class="font-bold text-base text-stone-900">ยิปซัม ฟู้ดเกรด (Gypsum /
+                                            แคลเซียมซัลเฟต)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: CaSO₄·2H₂O</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    นิยมในสายต้มเบียร์และทำเต้าหู้ ให้แคลเซียมคู่กับซัลเฟต แต่มีข้อจำกัดคือ
+                                    <strong>ละลายน้ำยากมาก (~0.24g/100ml)</strong>
+                                    จึงใช้ได้เฉพาะการชั่งผงผสมลงแกลลอนน้ำดื่มโดยตรง ไม่เหมาะกับการทำขวดหัวเชื้อหยด
+                                    (Dropper)
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-stone-100 text-xs">
+                                    <span class="font-mono text-stone-600">1 ppm CaCO₃ ใช้ = <strong>1.720
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('ca', 'gypsum')"
+                                        class="font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                                        <span>กดสลับใช้สารนี้ในโปรแกรม</span>
+                                        <i class="ph-bold ph-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GROUP 3: BUFFER / ALKALINITY (KH / Na) -->
+                <div class="bg-white border-2 border-emerald-200 rounded-3xl overflow-hidden shadow-sm">
+                    <div
+                        class="bg-emerald-50/80 border-b border-emerald-200 px-6 py-5 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold font-mono text-base shadow-sm">
+                                HCO₃⁻
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800">กลุ่มที่ 3 ·
+                                    ค่าด่างบัฟเฟอร์ (Carbonate Hardness / KH)</span>
+                                <h4 class="text-lg sm:text-xl font-bold text-stone-900">บัฟเฟอร์ & โซเดียม (Buffer) —
+                                    ตัวคุมสมดุลกรด & ชูความหวาน</h4>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold bg-emerald-100 text-emerald-900 px-3 py-1.5 rounded-full">
+                            โดดเด่นเรื่อง: pH Balance · Smoothness · Sweetness
+                        </span>
+                    </div>
+
+                    <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- Left: Role & How it works -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div>
+                                <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400 mb-1">คืออะไร &
+                                    ช่วยอะไรในกาแฟ?</h5>
+                                <p class="text-sm sm:text-base text-stone-700 leading-relaxed">
+                                    ขณะที่ Mg และ Ca ทำหน้าที่ดึงกรดผลไม้ออกมา <strong>บัฟเฟอร์ (HCO₃⁻)</strong>
+                                    จะทำหน้าที่เป็น "โช้คอัพ" คอยซับกรดส่วนเกินไม่ให้กาแฟเปรี้ยวแหลมบาดคอ
+                                    เมื่อกรดถูกปรับให้สมดุล ลิ้นของเราจะรับรส <strong>ความหวานฉ่ำ (Sweetness)</strong>
+                                    ของกาแฟได้ชัดเจนขึ้นมาก
+                                </p>
+                            </div>
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-1.5 text-sm">
+                                <div class="font-bold text-amber-900 flex items-center gap-1.5">
+                                    <i class="ph-fill ph-warning-circle text-lg"></i>
+                                    <span>ข้อควรระวังสำคัญ!</span>
+                                </div>
+                                <p class="text-amber-900/90 leading-relaxed">
+                                    ต้องใช้ <strong>เบกกิ้งโซดา (Baking Soda / โซเดียมไบคาร์บอเนต 100%)</strong>
+                                    เท่านั้น <strong>ห้ามใช้ผงฟู (Baking Powder)</strong> เด็ดขาด
+                                    เพราะผงฟูมีแป้งข้าวโพดและกรดผสมอยู่ จะทำให้น้ำขุ่นและกาแฟเสียรสชาติทันที
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right: Main Salt & Alternatives -->
+                        <div class="lg:col-span-7 space-y-4">
+                            <h5 class="text-sm font-bold uppercase tracking-wider text-stone-400">สารหลัก &
+                                สารที่ใช้ทดแทนได้</h5>
+
+                            <!-- Primary: Baking Soda -->
+                            <div class="border-2 border-emerald-500 bg-emerald-50/30 rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-emerald-600 text-white px-2.5 py-0.5 rounded-md">สารหลัก
+                                            (แนะนำ)</span>
+                                        <span class="font-bold text-base sm:text-lg text-stone-900">เบกกิ้งโซดา (Baking
+                                            Soda)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: NaHCO₃</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    ชื่อทางเคมีคือ <strong>โซเดียมไบคาร์บอเนต (Sodium Bicarbonate)</strong>
+                                    หาซื้อได้ตามซูเปอร์มาร์เก็ตทุกแห่ง (เช่น ยี่ห้อ McGarrett หรือ Arm & Hammer)
+                                    ให้ทั้งไอออนไบคาร์บอเนต (HCO₃⁻) เพื่อคุมกรด และโซเดียม (Na⁺)
+                                    เล็กน้อยที่ช่วยชูความหวาน
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-emerald-200/70 text-xs">
+                                    <span class="font-mono text-emerald-900">1 ppm CaCO₃ ใช้ = <strong>1.680
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('na', 'bicarb')"
+                                        class="font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1">
+                                        <span>ใช้อยู่เป็นค่าเริ่มต้นในโปรแกรม</span>
+                                        <i class="ph-bold ph-check-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Substitute 1: Potassium Bicarbonate -->
+                            <div class="border border-stone-200 bg-white rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-stone-200 text-stone-800 px-2.5 py-0.5 rounded-md">สารทดแทน
+                                            100% (ไร้โซเดียม)</span>
+                                        <span class="font-bold text-base text-stone-900">โพแทสเซียมไบคาร์บอเนต
+                                            (Potassium Bicarbonate)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: KHCO₃</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    ใช้แทนเบกกิ้งโซดาได้โดยตรง นิยมมากในสูตรน้ำ Specialty ยุคใหม่ (เช่น Lotus Water /
+                                    Barista Hustle) เพราะให้ค่าด่างบัฟเฟอร์ (HCO₃⁻) โดยไม่มีโซเดียม
+                                    รสชาติที่ได้จะสะอาดใส (Clean) และละลายน้ำได้ดีกว่าเบกกิ้งโซดาถึง 3 เท่า
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-stone-100 text-xs">
+                                    <span class="font-mono text-stone-600">1 ppm CaCO₃ ใช้ = <strong>2.001
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('na', 'khco3')"
+                                        class="font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                                        <span>กดสลับใช้สารนี้ในโปรแกรม</span>
+                                        <i class="ph-bold ph-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Substitute 2: Pure NaCl -->
+                            <div class="border border-stone-200 bg-white rounded-2xl p-4 sm:p-5">
+                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-xs font-bold bg-stone-200 text-stone-800 px-2.5 py-0.5 rounded-md">ทางเลือกเฉพาะกิจ</span>
+                                        <span class="font-bold text-base text-stone-900">เกลือบริสุทธิ์ไม่ผสมไอโอดีน
+                                            (Pure NaCl)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-stone-500">สูตร: NaCl</span>
+                                </div>
+                                <p class="text-sm text-stone-600 leading-relaxed">
+                                    <strong>ไม่ได้ช่วยปรับค่า pH (ไม่มีค่าด่าง KH)</strong> แต่ให้ไอออนโซเดียม (Na⁺)
+                                    ซึ่งมีคุณสมบัติช่วย <strong>ตัดความขม (Bitterness) และดันความหวาน</strong>
+                                    เหมาะสำหรับใช้หยดเสริมเล็กน้อยเมื่อไม่มีเบกกิ้งโซดา
+                                    หรือไม่ต้องการลดความเปรี้ยวของกาแฟ
+                                </p>
+                                <div
+                                    class="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-stone-100 text-xs">
+                                    <span class="font-mono text-stone-600">1 ppm CaCO₃ ใช้ = <strong>1.168
+                                            mg/L</strong></span>
+                                    <button onclick="selectChemAndGoToCalc('na', 'nacl')"
+                                        class="font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1 rounded-lg transition flex items-center gap-1">
+                                        <span>กดสลับใช้สารนี้ในโปรแกรม</span>
+                                        <i class="ph-bold ph-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary Comparison Table -->
+            <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">QUICK COMPARISON
+                        TABLE</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-stone-900">ตารางเปรียบเทียบสารเคมีทั้งหมดในโปรแกรม
+                    </h3>
+                    <p class="text-sm text-stone-500">เปรียบเทียบน้ำหนักที่ใช้ต่อ 1 ppm (as CaCO₃)
+                        และขีดจำกัดการละลายน้ำสำหรับทำขวดหัวเชื้อหยด (Dropper)</p>
+                </div>
+
+                <div class="overflow-x-auto -mx-6 px-6">
+                    <table class="w-full text-left border-collapse min-w-[680px]">
+                        <thead>
+                            <tr class="border-b-2 border-stone-200 text-xs uppercase tracking-wider text-stone-500">
+                                <th class="py-3 pr-4">กลุ่มแร่ธาตุ</th>
+                                <th class="py-3 px-4">ชื่อสารเคมี</th>
+                                <th class="py-3 px-4">จุดเด่นเรื่องรสชาติ</th>
+                                <th class="py-3 px-4 font-mono">1 ppm ใช้ (mg/L)</th>
+                                <th class="py-3 pl-4">การละลายน้ำ (ทำหัวเชื้อ)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200 text-sm">
+                            <tr>
+                                <td class="py-3.5 pr-4 font-bold text-sky-700">Mg (หลัก)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">ดีเกลือฝรั่ง (MgSO₄·7H₂O)</td>
+                                <td class="py-3.5 px-4 text-stone-600">ดึงกลิ่นดอกไม้/ผลไม้ เปรี้ยวคมชัด</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">2.463 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายง่ายมาก (~710 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-medium text-sky-600">Mg (ทดแทน)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">แมกนีเซียมคลอไรด์ (MgCl₂·6H₂O)</td>
+                                <td class="py-3.5 px-4 text-stone-600">เปรี้ยวสดใสแต่สัมผัสนุ่มมน ไม่ฝาด</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">2.031 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายง่ายมาก (~540 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-bold text-amber-700">Ca (หลัก)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">แคลเซียมแลคเตท (Pentahydrate)</td>
+                                <td class="py-3.5 px-4 text-stone-600">บอดี้ครีมมี่ นุ่มลื่น ชูรสหวานมาก</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">3.080 mg</td>
+                                <td class="py-3.5 pl-4 text-amber-700 font-medium">ปานกลาง (~66 g/L แนะนำน้ำอุ่น)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-medium text-amber-600">Ca (ทดแทน)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">แคลเซียมคลอไรด์ (CaCl₂·2H₂O)</td>
+                                <td class="py-3.5 px-4 text-stone-600">บอดี้แน่น สะอาดคลีน ละลายไว</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">1.469 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายง่ายมาก (~745 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-medium text-amber-600">Ca (ทดแทน)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">ยิปซัม (CaSO₄·2H₂O)</td>
+                                <td class="py-3.5 px-4 text-stone-600">บอดี้คมชัด (เหมาะผสมแกลลอนตรง)</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">1.720 mg</td>
+                                <td class="py-3.5 pl-4 text-rose-600 font-medium">ละลายยากมาก (~2.4 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-bold text-emerald-700">Buffer (หลัก)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">เบกกิ้งโซดา (NaHCO₃)</td>
+                                <td class="py-3.5 px-4 text-stone-600">ตัดเปรี้ยวแหลม คุมสมดุลกรด ชูหวาน</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">1.680 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายได้ดี (~96 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-medium text-emerald-600">Buffer (ทดแทน)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">โพแทสเซียมไบคาร์บอเนต (KHCO₃)</td>
+                                <td class="py-3.5 px-4 text-stone-600">คุมกรดเหมือนเบกกิ้งโซดาแต่ไร้โซเดียม</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">2.001 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายง่ายมาก (~330 g/L)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3.5 pr-4 font-medium text-emerald-600">Na (เสริม)</td>
+                                <td class="py-3.5 px-4 font-semibold text-stone-900">เกลือบริสุทธิ์ (NaCl)</td>
+                                <td class="py-3.5 px-4 text-stone-600">ลดความขม ดันหวาน (ไม่เพิ่มค่า KH)</td>
+                                <td class="py-3.5 px-4 font-mono font-bold">1.168 mg</td>
+                                <td class="py-3.5 pl-4 text-emerald-700 font-medium">ละลายง่ายมาก (~360 g/L)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Practical Tips for Beginners -->
+            <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">PRACTICAL TIPS</span>
+                    <h3 class="text-xl sm:text-2xl font-bold text-stone-900">4 เคล็ดลับการเตรียมอุปกรณ์และผสมใช้งานจริง
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <div class="flex items-center gap-2 font-bold text-base text-stone-900">
+                            <span
+                                class="w-6 h-6 rounded-full bg-stone-900 text-white text-xs flex items-center justify-center font-mono">1</span>
+                            <span>เลือกซื้อสารเกรดอาหาร (Food Grade)</span>
+                        </div>
+                        <p class="text-sm text-stone-600 leading-relaxed">
+                            เวลาสั่งซื้อสารทั้ง 3 ตัว แนะนำให้สังเกตคำว่า <strong>Food Grade, FCC หรือ USP
+                                Grade</strong> บนฉลากเสมอ (ไม่ใช้เกรดการเกษตรหรือเกรดแช่เท้า) ซื้อถุงละ 100–250
+                            กรัมในราคาหลักสิบบาท สามารถชงกาแฟได้หลายพันแก้ว
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <div class="flex items-center gap-2 font-bold text-base text-stone-900">
+                            <span
+                                class="w-6 h-6 rounded-full bg-stone-900 text-white text-xs flex items-center justify-center font-mono">2</span>
+                            <span>เลือกวิธีผสมให้เหมาะกับตาชั่งที่มี</span>
+                        </div>
+                        <p class="text-sm text-stone-600 leading-relaxed">
+                            หากมีเฉพาะตาชั่งดริปกาแฟ (ทศนิยม 0.1g) หรือตาชั่ง 0.01g แนะนำให้เลือกโหมด <strong>"ผสมใส่ขวด
+                                Dropper 100 ml"</strong> หรือตั้งน้ำเป็น <strong>"5,000 ml (แกลลอน 5 ลิตร)"</strong>
+                            เพราะน้ำหนักผงจะอยู่ในหลักกรัม ชั่งง่ายและแม่นยำกว่าชั่งทีละ 0.03g ลงกาดริปโดยตรง
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <div class="flex items-center gap-2 font-bold text-base text-stone-900">
+                            <span
+                                class="w-6 h-6 rounded-full bg-stone-900 text-white text-xs flex items-center justify-center font-mono">3</span>
+                            <span>ทำไมต้องแยกขวดหัวเชื้อ Ca กับ เบกกิ้งโซดา?</span>
+                        </div>
+                        <p class="text-sm text-stone-600 leading-relaxed">
+                            หากผสมแคลเซียมและเบกกิ้งโซดาความเข้มข้นสูงมากๆ ไว้ในขวดเล็กขวดเดียวกัน
+                            อาจเกิดปฏิกิริยากลายเป็น <strong>หินปูน (CaCO₃) ตกตะกอนขุ่นขาว</strong> ได้ การแยกเป็น 3 ขวด
+                            Dropper จึงเก็บได้นานเป็นปีโดยไม่ตกตะกอนครับ
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <div class="flex items-center gap-2 font-bold text-base text-stone-900">
+                            <span
+                                class="w-6 h-6 rounded-full bg-stone-900 text-white text-xs flex items-center justify-center font-mono">4</span>
+                            <span>การปรับสูตรเมื่อชิมกาแฟจริง</span>
+                        </div>
+                        <p class="text-sm text-stone-600 leading-relaxed">
+                            • ถ้ารู้สึกว่ากาแฟ <strong>เปรี้ยวแหลมเกินไป</strong> → เพิ่มสัดส่วน <strong>Buffer (Baking
+                                Soda)</strong> หรือเพิ่ม Ca<br>
+                            • ถ้ารู้สึกว่ากาแฟ <strong>รสแบนทื่อ ไม่สดใส</strong> → ลดสัดส่วน <strong>Buffer</strong> ลง
+                            และเพิ่ม <strong>Mg (ดีเกลือฝรั่ง)</strong><br>
+                            • ถ้ารู้สึกว่ากาแฟ <strong>ขมฝาด หนักเกินไป</strong> → ลดค่า <strong>TDS รวม</strong> ลง
+                            (เช่น จาก 95 เหลือ 75 ppm)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom CTA to switch back to Calculator -->
+                <div
+                    class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-200">
+                    <div class="text-sm text-stone-600">
+                        พร้อมออกแบบสูตรน้ำชงกาแฟของคุณแล้วหรือยัง? กดสลับไปหน้าโปรแกรมคำนวณได้เลย!
+                    </div>
+                    <button onclick="switchMainTab('calculator')"
+                        class="w-full sm:w-auto py-3.5 px-7 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-base flex items-center justify-center gap-2.5 transition shadow-md shrink-0">
+                        <i class="ph-fill ph-calculator text-xl text-amber-400"></i>
+                        <span>ไปที่โปรแกรมคำนวณสูตรน้ำ</span>
+                        <i class="ph-bold ph-arrow-right"></i>
                     </button>
                 </div>
+            </section>
 
-            </div>
-        </section>
+        </div><!-- End of #pageGuide -->
 
     </main>
 
@@ -982,6 +1700,14 @@
                     solubilityLimitGPerL: 96, // ~9.6g / 100ml at 20-25°C
                     maxPpmPerDrop100ml: 24,   // 24 ppm/drop => 48,000 ppm in bottle => 80.64 g/L (84% of saturation limit)
                     note: '1 ppm CaCO₃ ใช้ 1.680 mg/L (ละลายน้ำได้ ~96 g/L ที่ 25°C)'
+                },
+                khco3: {
+                    name: 'โพแทสเซียมไบคาร์บอเนต (KHCO₃)',
+                    shortName: 'KHCO₃',
+                    factor: 2.001, // (2 * 100.115) / 100.0869
+                    solubilityLimitGPerL: 330, // ~33g / 100ml at 20-25°C
+                    maxPpmPerDrop100ml: 25,
+                    note: '1 ppm CaCO₃ ใช้ 2.001 mg/L (ไร้โซเดียม ละลายน้ำได้สูง ~330 g/L)'
                 },
                 nacl: {
                     name: 'เกลือบริสุทธิ์ (NaCl)',
@@ -1206,6 +1932,52 @@
             document.getElementById('caPercentSlider').value = ca;
             document.getElementById('naPercentInput').value = na;
             document.getElementById('naPercentSlider').value = na;
+        }
+
+        // ==========================================
+        // MAIN TAB NAVIGATION & CHEM SELECTOR
+        // ==========================================
+        function switchMainTab(tab) {
+            const pageCalc = document.getElementById('pageCalculator');
+            const pageGuide = document.getElementById('pageGuide');
+            const btnCalc = document.getElementById('mainTabCalc');
+            const btnGuide = document.getElementById('mainTabGuide');
+
+            if (tab === 'guide') {
+                pageCalc.classList.add('hidden');
+                pageGuide.classList.remove('hidden');
+
+                btnGuide.className = 'flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all bg-stone-900 text-white shadow-sm';
+                btnCalc.className = 'flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all text-stone-600 hover:text-stone-900 hover:bg-stone-200/60';
+            } else {
+                pageGuide.classList.add('hidden');
+                pageCalc.classList.remove('hidden');
+
+                btnCalc.className = 'flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all bg-stone-900 text-white shadow-sm';
+                btnGuide.className = 'flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all text-stone-600 hover:text-stone-900 hover:bg-stone-200/60';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectChemAndGoToCalc(group, saltValue) {
+            const selectEl = document.getElementById(`${group}SaltSelect`);
+            if (selectEl) {
+                selectEl.value = saltValue;
+            }
+            const panel = document.getElementById('advancedChemPanel');
+            const chevron = document.getElementById('advChevron');
+            if (panel && panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                if (chevron) chevron.classList.add('rotate-180');
+            }
+            calculateAll();
+            switchMainTab('calculator');
+            setTimeout(() => {
+                if (panel) {
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 250);
         }
 
         // ==========================================
