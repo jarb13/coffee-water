@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Water Lab - คำนวณแร่ธาตุน้ำชงกาแฟ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                        mono: ['Inter', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Clean Custom Range Slider for Light Theme */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid currentColor;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 10px;
+            cursor: pointer;
+            border-radius: 999px;
+            background: #e7e5e4;
+        }
+    </style>
+</head>
+<body class="bg-[#F9F8F6] text-stone-800 min-h-screen font-sans selection:bg-stone-800 selection:text-white pb-20">
+
+    <!-- Clean Minimal Header -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-stone-900 flex items-center justify-center text-white shadow-sm">
+                    <i class="ph-fill ph-drop-half-bottom text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-stone-900 tracking-tight">
+                        Coffee Water Lab
+                    </h1>
+                    <p class="text-sm text-stone-500">คำนวณน้ำหนักสารผสมน้ำชงกาแฟ (Epsom · Calcium Lactate · Baking Soda)</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 text-sm bg-stone-100 border border-stone-200 px-4 py-2 rounded-full text-stone-700 font-medium">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>หน่วยมาตรฐาน SCA (ppm as CaCO₃)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+        
+        <!-- STEP 1: Presets (Simple & Large) -->
+        <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 1</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-stone-900">เลือกโปรไฟล์น้ำตามโพรเซส หรือ รสชาติ</h2>
+                </div>
+                <span class="text-sm text-stone-500">กดเลือกเพื่อตั้งค่าเริ่มต้น (ปรับเองต่อได้)</span>
+            </div>
+
+            <!-- Process Presets -->
+            <div class="mb-6">
+                <label class="text-sm font-semibold text-stone-500 mb-3 block">เลือกตามโพรเซสกาแฟ (Coffee Process)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button onclick="applyPreset('washed')" id="btn-washed" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-bold text-stone-900">Washed</span>
+                            <span class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">85 ppm</span>
+                        </div>
+                        <div class="text-sm text-stone-600 font-medium">คลีน สว่าง ซับซ้อน</div>
+                        <div class="text-xs text-stone-400 mt-1">เน้น Mg ดึงกลิ่นดอกไม้/ผลไม้</div>
+                    </button>
+
+                    <button onclick="applyPreset('natural')" id="btn-natural" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-bold text-stone-900">Natural / Dry</span>
+                            <span class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">95 ppm</span>
+                        </div>
+                        <div class="text-sm text-stone-600 font-medium">หวานฉ่ำ บอดี้แน่น</div>
+                        <div class="text-xs text-stone-400 mt-1">เน้น Ca + Na ชูรสหวาน</div>
+                    </button>
+
+                    <button onclick="applyPreset('honey')" id="btn-honey" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-bold text-stone-900">Honey</span>
+                            <span class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">90 ppm</span>
+                        </div>
+                        <div class="text-sm text-stone-600 font-medium">หวานละมุน กลมกล่อม</div>
+                        <div class="text-xs text-stone-400 mt-1">สัดส่วน Mg และ Ca สมดุลกัน</div>
+                    </button>
+
+                    <button onclick="applyPreset('anaerobic')" id="btn-anaerobic" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-bold text-stone-900">Anaerobic</span>
+                            <span class="text-sm font-mono font-semibold bg-stone-100 px-2.5 py-0.5 rounded-lg text-stone-700">70 ppm</span>
+                        </div>
+                        <div class="text-sm text-stone-600 font-medium">กลิ่นพุ่ง ไม่ขมฝาด</div>
+                        <div class="text-xs text-stone-400 mt-1">ลด TDS ป้องกันการสกัดเกิน</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flavor Presets -->
+            <div>
+                <label class="text-sm font-semibold text-stone-500 mb-3 block">หรือเลือกตามโทนรสชาติที่อยากเน้น (Flavor Target)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button onclick="applyPreset('acidity')" id="btn-acidity" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                            <span class="text-base font-bold text-stone-900">เน้นเปรี้ยวสดใส</span>
+                        </div>
+                        <div class="text-xs text-stone-500">Mg สูง (60%) ดึงกรดผลไม้เต็มที่</div>
+                    </button>
+
+                    <button onclick="applyPreset('sweetness')" id="btn-sweetness" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span class="text-base font-bold text-stone-900">เน้นความหวาน</span>
+                        </div>
+                        <div class="text-xs text-stone-500">เพิ่ม Buffer ตัดเปรี้ยวแหลม ชูรสหวาน</div>
+                    </button>
+
+                    <button onclick="applyPreset('body')" id="btn-body" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-200 bg-white hover:border-stone-400 transition-all">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span class="text-base font-bold text-stone-900">เน้นบอดี้นุ่มแน่น</span>
+                        </div>
+                        <div class="text-xs text-stone-500">Calcium Lactate สูง (50%) นุ่มครีมมี่</div>
+                    </button>
+
+                    <button onclick="applyPreset('balanced')" id="btn-balanced" class="preset-btn text-left p-4 rounded-2xl border-2 border-stone-900 bg-stone-900 text-white transition-all">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                            <span class="text-base font-bold">สมดุล (SCA)</span>
+                        </div>
+                        <div class="text-xs text-stone-300">สูตรมาตรฐาน บาลานซ์ทุกมิติ</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Preset Explanation Banner -->
+            <div class="mt-6 bg-stone-100 border border-stone-200 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <div class="text-xs font-bold uppercase tracking-wider text-stone-500" id="bannerBadge">โปรไฟล์ที่เลือก</div>
+                    <h3 class="text-lg font-bold text-stone-900 mt-0.5" id="bannerTitle">Balanced (สมดุลมาตรฐาน SCA)</h3>
+                    <p class="text-sm text-stone-600 mt-1" id="bannerDesc">
+                        ให้ความสมดุลทั้งความเปรี้ยว ความหวาน และบอดี้ เหมาะสำหรับกาแฟทุกโพรเซสเพื่อดูคาแรกเตอร์พื้นฐานของเมล็ด
+                    </p>
+                </div>
+                <div class="shrink-0 bg-white border border-stone-200 rounded-xl px-4 py-2.5 text-right">
+                    <div class="text-xs text-stone-500">อัตราส่วน ความกระด้าง : ด่าง (GH:KH)</div>
+                    <div class="text-xl font-bold font-mono text-stone-900" id="ghKhRatioDisplay">2.3 : 1</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: Water Volume, TDS & Mineral Sliders -->
+        <section class="bg-white border border-stone-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-8">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-stone-400">STEP 2</span>
+                <h2 class="text-xl sm:text-2xl font-bold text-stone-900">กำหนดปริมาณน้ำ และ ค่า TDS ที่ต้องการ</h2>
+            </div>
+
+            <!-- Big Inputs: Water Volume & Target TDS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Box 1: Water Volume -->
+                <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <label class="text-base font-bold text-stone-900 block">1. ปริมาณน้ำที่ใช้ชงกาแฟ (ml)</label>
+                        <p class="text-sm text-stone-500 mt-0.5">ขนาดกาดริป เหยือก หรือแกลลอนน้ำที่คุณต้องการผสม</p>
+                    </div>
+                    
+                    <div class="my-4 flex items-baseline gap-3">
+                        <input type="number" id="brewWaterInput" value="600" min="50" max="20000" step="10"
+                            oninput="calculateAll()"
+                            class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
+                        <span class="text-xl font-bold text-stone-500 font-mono">ml</span>
+                    </div>
+
+                    <!-- Quick Volume Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setBrewVolume(250)" class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">250 ml</button>
+                        <button onclick="setBrewVolume(500)" class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">500 ml</button>
+                        <button onclick="setBrewVolume(600)" class="vol-pill text-sm font-mono font-bold px-3 py-1.5 rounded-xl bg-stone-900 text-white border border-stone-900 transition">600 ml (กาดริป)</button>
+                        <button onclick="setBrewVolume(1000)" class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">1,000 ml (1 ลิตร)</button>
+                        <button onclick="setBrewVolume(5000)" class="vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition">5,000 ml</button>
+                    </div>
+                </div>
+
+                <!-- Box 2: Target TDS -->
+                <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <label class="text-base font-bold text-stone-900 block">2. ค่า TDS เป้าหมาย (ppm)</label>
+                        <p class="text-sm text-stone-500 mt-0.5">ความเข้มข้นแร่ธาตุรวม (แนะนำ 70 - 110 ppm สำหรับดริป)</p>
+                    </div>
+
+                    <div class="my-4 flex items-baseline gap-3">
+                        <input type="number" id="targetTdsInput" value="90" min="10" max="400" step="1"
+                            class="w-full bg-white border-2 border-stone-300 focus:border-stone-900 rounded-2xl px-4 py-3 text-3xl font-bold font-mono text-stone-900 outline-none transition">
+                        <span class="text-xl font-bold text-stone-500 font-mono">ppm</span>
+                    </div>
+
+                    <div>
+                        <input type="range" id="targetTdsSlider" min="20" max="200" step="1" value="90"
+                            class="w-full text-stone-900">
+                        <div class="flex justify-between text-xs font-mono text-stone-500 mt-1.5">
+                            <span>30 ppm (บางเบา)</span>
+                            <span>90 ppm (มาตรฐาน)</span>
+                            <span>150+ ppm (เข้มข้น)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Mineral Proportion Sliders -->
+            <div class="pt-4 border-t border-stone-200 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-900">สัดส่วนสารประกอบทั้ง 3 ชนิด</h3>
+                        <p class="text-sm text-stone-500">เลื่อนปรับเปอร์เซ็นต์ ระบบจะคำนวณน้ำหนักกรัมตามมวลโมเลกุลของสารแต่ละตัวให้อัตโนมัติ</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="totalPercentBadge" class="text-sm font-mono font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">รวม: 100%</span>
+                        <button onclick="normalizePercentages()" class="text-sm font-medium text-stone-700 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-xl transition">
+                            ปรับรวมให้ 100%
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. Magnesium (Epsom Salt) -->
+                <div class="p-5 rounded-2xl bg-sky-50/60 border border-sky-200/80 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 rounded-full bg-sky-600"></span>
+                                <span class="font-bold text-lg text-stone-900">แมกนีเซียม (Mg) — ใช้ดีเกลือฝรั่ง (Epsom Salt)</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mt-0.5">ช่วยดึงกลิ่นหอมผลไม้ ดอกไม้ และความเปรี้ยวที่สดใส (Acidity)</p>
+                        </div>
+                        <div class="flex items-center gap-4 font-mono">
+                            <div class="text-right">
+                                <span id="mgPpmDisplay" class="text-2xl font-bold text-sky-700">40.5</span>
+                                <span class="text-sm text-stone-500">ppm</span>
+                            </div>
+                            <div class="flex items-center bg-white border-2 border-sky-300 rounded-xl px-3 py-1.5">
+                                <input type="number" id="mgPercentInput" value="45" min="0" max="100" class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="range" id="mgPercentSlider" min="0" max="100" value="45" class="w-full text-sky-600">
+                </div>
+
+                <!-- 2. Calcium (Calcium Lactate) -->
+                <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 rounded-full bg-amber-600"></span>
+                                <span class="font-bold text-lg text-stone-900">แคลเซียม (Ca) — ใช้แคลเซียมแลคเตท (Calcium Lactate)</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mt-0.5">เพิ่มเนื้อสัมผัสหนักแน่น นุ่มนวล ครีมมี่ (Body & Sweet Finish) *ใช้ปริมาณกรัมมากกว่าตัวอื่นเพราะมวลโมเลกุลใหญ่*</p>
+                        </div>
+                        <div class="flex items-center gap-4 font-mono">
+                            <div class="text-right">
+                                <span id="caPpmDisplay" class="text-2xl font-bold text-amber-700">22.5</span>
+                                <span class="text-sm text-stone-500">ppm</span>
+                            </div>
+                            <div class="flex items-center bg-white border-2 border-amber-300 rounded-xl px-3 py-1.5">
+                                <input type="number" id="caPercentInput" value="25" min="0" max="100" class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="range" id="caPercentSlider" min="0" max="100" value="25" class="w-full text-amber-600">
+                </div>
+
+                <!-- 3. Buffer / Sodium (Baking Soda) -->
+                <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
+                                <span class="font-bold text-lg text-stone-900">บัฟเฟอร์ (KH/Na) — ใช้เบกกิ้งโซดา (Baking Soda)</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mt-0.5">ลดความเปรี้ยวแหลม ควบคุมสมดุลกรด และช่วยชูความหวาน</p>
+                        </div>
+                        <div class="flex items-center gap-4 font-mono">
+                            <div class="text-right">
+                                <span id="naPpmDisplay" class="text-2xl font-bold text-emerald-700">27.0</span>
+                                <span class="text-sm text-stone-500">ppm</span>
+                            </div>
+                            <div class="flex items-center bg-white border-2 border-emerald-300 rounded-xl px-3 py-1.5">
+                                <input type="number" id="naPercentInput" value="30" min="0" max="100" class="w-12 bg-transparent text-right text-xl font-bold text-stone-900 outline-none">
+                                <span class="text-base font-bold text-stone-500 ml-1">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="range" id="naPercentSlider" min="0" max="100" value="30" class="w-full text-emerald-600">
+                </div>
+
+                <!-- Visual Bar & Summary -->
+                <div class="pt-2">
+                    <div class="h-4 w-full rounded-full bg-stone-200 overflow-hidden flex">
+                        <div id="barMg" class="bg-sky-600 transition-all duration-200" style="width: 45%"></div>
+                        <div id="barCa" class="bg-amber-500 transition-all duration-200" style="width: 25%"></div>
+                        <div id="barNa" class="bg-emerald-600 transition-all duration-200" style="width: 30%"></div>
+                    </div>
+                    <div class="flex flex-wrap justify-between text-sm text-stone-600 mt-2 font-mono">
+                        <span>ความกระด้างรวม GH (Mg + Ca): <strong id="totalGhDisplay" class="text-stone-900">63.0 ppm</strong></span>
+                        <span>ค่าด่างบัฟเฟอร์ KH (Baking Soda): <strong id="totalKhDisplay" class="text-stone-900">27.0 ppm</strong></span>
+                    </div>
+                </div>
+
+                <!-- Optional Chemical Settings Accordion -->
+                <div class="pt-2">
+                    <button onclick="toggleAdvancedChem()" class="text-sm font-medium text-stone-500 hover:text-stone-800 flex items-center gap-1.5">
+                        <i class="ph ph-gear"></i>
+                        <span>ตั้งค่าชนิดสารเคมีเพิ่มเติม (ค่าเริ่มต้นตั้งเป็น Calcium Lactate + ดีเกลือฝรั่ง + Baking Soda แล้ว)</span>
+                        <i id="advChevron" class="ph ph-caret-down transition-transform"></i>
+                    </button>
+
+                    <div id="advancedChemPanel" class="hidden mt-4 p-4 bg-stone-50 rounded-2xl border border-stone-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-stone-700 mb-1">สารแมกนีเซียม (Mg)</label>
+                            <select id="mgSaltSelect" onchange="calculateAll()" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                <option value="epsom" selected>ดีเกลือฝรั่ง (MgSO₄·7H₂O)</option>
+                                <option value="mgcl2">แมกนีเซียมคลอไรด์ (MgCl₂·6H₂O)</option>
+                            </select>
+                            <p id="mgSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-stone-700 mb-1">สารแคลเซียม (Ca)</label>
+                            <select id="caSaltSelect" onchange="calculateAll()" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                <option value="lactate_pentahydrate" selected>Calcium Lactate (Pentahydrate ทั่วไป)</option>
+                                <option value="lactate_anhydrous">Calcium Lactate (Anhydrous ไร้ความชื้น)</option>
+                                <option value="cacl2_dihydrate">แคลเซียมคลอไรด์ (CaCl₂·2H₂O)</option>
+                                <option value="gypsum">ยิปซัม (CaSO₄·2H₂O)</option>
+                            </select>
+                            <p id="caSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-stone-700 mb-1">สารบัฟเฟอร์ (Buffer/Na)</label>
+                            <select id="naSaltSelect" onchange="calculateAll()" class="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-sm text-stone-800 outline-none">
+                                <option value="bicarb" selected>เบกกิ้งโซดา (NaHCO₃)</option>
+                                <option value="nacl">เกลือบริสุทธิ์ (NaCl)</option>
+                            </select>
+                            <p id="naSaltNote" class="text-xs text-stone-500 mt-1 font-mono"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3: RESULTS (Big, Clear, 2 Modes) -->
+        <section class="bg-white border-2 border-stone-900 rounded-3xl overflow-hidden shadow-md">
+            
+            <!-- Top Header & Mode Switcher -->
+            <div class="bg-stone-900 text-white p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400">STEP 3 · ผลลัพธ์การคำนวณ</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold mt-1">ปริมาณสารที่ต้องใช้</h2>
+                    <p class="text-stone-300 text-sm mt-0.5">
+                        สำหรับน้ำชงกาแฟ <strong class="brewVolText text-white font-mono underline">600</strong> <strong>ml</strong> ที่ค่า TDS <strong id="summaryTdsText" class="text-amber-400 font-mono">90</strong> <strong>ppm</strong>
+                    </p>
+                </div>
+
+                <!-- Mode Switcher Pill -->
+                <div class="bg-stone-800 p-1.5 rounded-2xl flex gap-1 self-start md:self-center">
+                    <button onclick="switchResultMode('direct')" id="tabDirect" class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all bg-white text-stone-900 shadow">
+                        เทผสมใส่กาดริป / เหยือก
+                    </button>
+                    <button onclick="switchResultMode('dropper')" id="tabDropper" class="px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all text-stone-300 hover:text-white">
+                        ผสมใส่ขวด Dropper
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8">
+
+                <!-- ==========================================
+                     MODE 1: DIRECT MIX INTO KETTLE / PITCHER
+                =========================================== -->
+                <div id="viewDirect" class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-stone-200">
+                        <div>
+                            <h3 class="text-xl font-bold text-stone-900">
+                                ชั่งผงแร่ธาตุเทลงในน้ำบริสุทธิ์ <span class="brewVolText font-mono text-sky-700">600</span> ml โดยตรง
+                            </h3>
+                            <p class="text-sm text-stone-500">
+                                สารแต่ละตัวใช้ปริมาณกรัมไม่เท่ากัน เนื่องจากน้ำหนักโมเลกุลต่างกัน (โดยเฉพาะ Calcium Lactate จะมีน้ำหนักมากกว่า)
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3 Big Mineral Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        
+                        <!-- Card 1: Epsom Salt -->
+                        <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
+                                    1. แมกนีเซียม (Mg)
+                                </span>
+                                <h4 id="directMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง (Epsom Salt)</h4>
+                                <p class="text-sm text-stone-500 mt-1">
+                                    ให้ค่า Mg = <strong id="directMgPpmText" class="font-mono text-stone-800">40.5</strong> ppm
+                                </p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-sky-200/80">
+                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
+                                    <span id="directMgGrams">0.060</span> <span class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    หรือ <strong id="directMgMg" class="text-stone-900">59.9</strong> มิลลิกรัม (mg)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Calcium Lactate -->
+                        <div class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
+                                    2. แคลเซียม (Ca)
+                                </span>
+                                <h4 id="directCaSaltName" class="text-xl font-bold text-stone-900 mt-3">แคลเซียมแลคเตท (Calcium Lactate)</h4>
+                                <p class="text-sm text-stone-500 mt-1">
+                                    ให้ค่า Ca = <strong id="directCaPpmText" class="font-mono text-stone-800">22.5</strong> ppm
+                                </p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-amber-200/80">
+                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
+                                    <span id="directCaGrams">0.042</span> <span class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    หรือ <strong id="directCaMg" class="text-stone-900">41.6</strong> มิลลิกรัม (mg)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Baking Soda -->
+                        <div class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
+                                    3. บัฟเฟอร์ (Buffer)
+                                </span>
+                                <h4 id="directNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา (Baking Soda)</h4>
+                                <p class="text-sm text-stone-500 mt-1">
+                                    ให้ค่า KH = <strong id="directNaPpmText" class="font-mono text-stone-800">27.0</strong> ppm
+                                </p>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-emerald-200/80">
+                                <div class="text-xs text-stone-500">น้ำหนักที่ต้องชั่ง:</div>
+                                <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
+                                    <span id="directNaGrams">0.027</span> <span class="text-xl font-normal text-stone-600">กรัม (g)</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    หรือ <strong id="directNaMg" class="text-stone-900">27.2</strong> มิลลิกรัม (mg)
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Summary Bar -->
+                    <div class="bg-stone-100 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="text-sm text-stone-600">
+                            💡 <strong>คำแนะนำ:</strong> หากชั่งใส่กาดริป 600ml โดยตรง น้ำหนักจะน้อยมาก (ระดับ 0.0x กรัม) แนะนำให้กดเลือกเมนู <strong>"ผสมใส่ขวด Dropper"</strong> ด้านบน หรือผสมใส่แกลลอน 5,000 ml จะชั่งง่ายกว่ามากครับ
+                        </div>
+                        <div class="shrink-0 text-right font-mono">
+                            <span class="text-xs text-stone-500 block">น้ำหนักผงรวมทั้งหมด</span>
+                            <span class="text-lg font-bold text-stone-900"><span id="directTotalGrams">0.129</span> g (<span id="directTotalMg">128.7</span> mg)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==========================================
+                     MODE 2: DROPPER CONCENTRATE VIEW
+                =========================================== -->
+                <div id="viewDropper" class="space-y-6 hidden">
+                    
+                    <!-- Dropper Settings Bar (Size & Concentration Level) -->
+                    <div class="bg-stone-100 border border-stone-200 rounded-2xl p-5 space-y-5">
+                        
+                        <!-- Row 1: Bottle Size -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-stone-200/80">
+                            <div>
+                                <h3 class="text-lg font-bold text-stone-900">1. เลือกขนาดขวด Dropper ที่คุณใช้ทำหัวเชื้อ</h3>
+                                <p class="text-sm text-stone-600">ขนาดขวดสำหรับละลายผงแร่ธาตุเก็บไว้หยดลงกาดริป <strong class="brewVolText">600</strong> ml</p>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button onclick="setDropperSize(30)" id="dropSize-30" class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">30 ml</button>
+                                <button onclick="setDropperSize(50)" id="dropSize-50" class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition">50 ml</button>
+                                <button onclick="setDropperSize(100)" id="dropSize-100" class="drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-900 bg-stone-900 text-white font-bold transition">100 ml</button>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Concentration Level -->
+                        <div class="space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                <div>
+                                    <h3 class="text-lg font-bold text-stone-900">2. เลือกระดับความเข้มข้นของหัวเชื้อในขวด</h3>
+                                    <p class="text-sm text-stone-600">ยิ่งเข้มข้นสูง ยิ่งใช้จำนวนหยดน้อยลง (คำนวณตามจุดอิ่มตัวการละลายน้ำของสารแต่ละตัว)</p>
+                                </div>
+                                <span id="concModeBadge" class="text-xs font-mono font-semibold bg-amber-100 text-amber-900 px-3 py-1 rounded-full self-start sm:self-center">
+                                    หยดน้อยที่สุด (ตามลิมิตการละลายของแต่ละสาร)
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                                <button onclick="setDropperConc('low')" id="concBtn-low" class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white hover:border-stone-400 transition">
+                                    <div class="font-bold text-base text-stone-900">ต่ำ (มาตรฐาน)</div>
+                                    <div class="text-xs text-stone-500 mt-0.5">ละลายง่ายมาก คุมหยดละเอียด</div>
+                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +1 ppm / 100ml</div>
+                                </button>
+
+                                <button onclick="setDropperConc('medium')" id="concBtn-medium" class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white hover:border-stone-400 transition">
+                                    <div class="font-bold text-base text-stone-900">ปานกลาง (เข้ม 2.5x)</div>
+                                    <div class="text-xs text-stone-500 mt-0.5">ลดจำนวนหยดลง 2.5 เท่า</div>
+                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +2.5 ppm / 100ml</div>
+                                </button>
+
+                                <button onclick="setDropperConc('high')" id="concBtn-high" class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white hover:border-stone-400 transition">
+                                    <div class="font-bold text-base text-stone-900">สูง (เท่ากันทุกขวด 5x)</div>
+                                    <div class="text-xs text-stone-500 mt-0.5">เพดานสูงสุดของ Calcium Lactate</div>
+                                    <div class="text-xs font-mono font-semibold text-stone-700 mt-1">1 หยด = +5 ppm / 100ml</div>
+                                </button>
+
+                                <button onclick="setDropperConc('max')" id="concBtn-max" class="conc-btn text-left p-3.5 rounded-xl border-2 border-stone-900 bg-stone-900 text-white transition">
+                                    <div class="font-bold text-base flex items-center justify-between">
+                                        <span>สูงสุดแยกตามสาร</span>
+                                        <span class="text-[11px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-md font-bold">หยดน้อยสุด</span>
+                                    </div>
+                                    <div class="text-xs text-stone-300 mt-0.5">อัดเต็มลิมิตการละลายของแต่ละตัว</div>
+                                    <div class="text-xs font-mono font-semibold text-amber-300 mt-1">Mg x20 | Ca x6 | Na x12</div>
+                                </button>
+                            </div>
+
+                            <!-- Solubility Technical Info Box -->
+                            <div class="bg-white border border-stone-200 rounded-xl p-3.5 text-xs sm:text-sm text-stone-600 flex items-start gap-2.5">
+                                <i class="ph-fill ph-info text-stone-800 text-lg shrink-0 mt-0.5"></i>
+                                <div id="concExplainText">
+                                    <strong>โหมดความเข้มข้นสูงสุดแยกตามสาร (Max Safe Solubility ที่ 25°C):</strong> สารแต่ละชนิดละลายน้ำได้ไม่เท่ากัน — 
+                                    <strong>ดีเกลือฝรั่ง</strong>ละลายได้สูงมาก (~70g/100ml) เราตั้งไว้ที่ <strong>49.3g/100ml</strong>, 
+                                    ส่วน<strong>แคลเซียมแลคเตท</strong>ละลายได้จำกัด (~6.5g/100ml) เราตั้งไว้ที่ <strong>5.54g/100ml</strong> (แนะนำใช้น้ำอุ่นช่วยละลาย) 
+                                    และ<strong>เบกกิ้งโซดา</strong>ละลายได้ ~9.6g/100ml เราตั้งไว้ที่ <strong>8.06g/100ml</strong> เพื่อไม่ให้ตกผลึกนอนก้นขวดครับ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 Dropper Bottle Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        
+                        <!-- Bottle 1: Mg -->
+                        <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-sky-100 text-sky-800">
+                                        ขวดที่ 1 : แมกนีเซียม (Mg)
+                                    </span>
+                                    <span id="dropMgStrengthTag" class="text-xs font-mono font-bold text-sky-700 bg-white px-2 py-0.5 rounded border border-sky-200">
+                                        1 หยด = +20 ppm/100ml
+                                    </span>
+                                </div>
+                                <h4 id="dropMgSaltName" class="text-xl font-bold text-stone-900 mt-3">ดีเกลือฝรั่ง (Epsom Salt)</h4>
+                                
+                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-sky-200">
+                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span class="dropBottleVolText font-bold">100</span> ml:</div>
+                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                        ใช้สาร <span id="dropMgGrams" class="text-sky-700 font-mono text-2xl">49.26 g</span>
+                                    </div>
+                                    <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span class="dropBottleVolText font-semibold">100</span> ml</div>
+                                    <div id="dropMgSolubilityBar" class="text-[11px] font-mono text-sky-700 mt-1 pt-1 border-t border-stone-100">
+                                        ความเข้มข้น: 493 g/L (ลิมิตละลาย ~710 g/L)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-sky-200">
+                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                <div class="text-4xl font-bold font-mono text-sky-700 mt-1">
+                                    <span id="dropMgDrops">12</span> <span class="text-xl font-sans font-semibold">หยด</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    (ค่าแม่นยำ <span id="dropMgExactDrops">12.2</span> หยด หรือ <strong id="dropMgMl" class="text-stone-900">0.61</strong> <strong>ml</strong>)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottle 2: Ca (Calcium Lactate) -->
+                        <div class="rounded-2xl border-2 border-amber-200 bg-amber-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-amber-100 text-amber-900">
+                                        ขวดที่ 2 : แคลเซียม (Ca)
+                                    </span>
+                                    <span id="dropCaStrengthTag" class="text-xs font-mono font-bold text-amber-800 bg-white px-2 py-0.5 rounded border border-amber-200">
+                                        1 หยด = +6 ppm/100ml
+                                    </span>
+                                </div>
+                                <h4 id="dropCaSaltName" class="text-xl font-bold text-stone-900 mt-3">แคลเซียมแลคเตท</h4>
+                                
+                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-amber-200">
+                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span class="dropBottleVolText font-bold">100</span> ml:</div>
+                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                        ใช้สาร <span id="dropCaGrams" class="text-amber-700 font-mono text-2xl">5.54 g</span>
+                                    </div>
+                                    <div class="text-xs text-stone-500">ใช้น้ำอุ่นละลาย แล้วเติมน้ำให้ครบ <span class="dropBottleVolText font-semibold">100</span> ml</div>
+                                    <div id="dropCaSolubilityBar" class="text-[11px] font-mono text-amber-700 mt-1 pt-1 border-t border-stone-100">
+                                        ความเข้มข้น: 55 g/L (ลิมิตละลาย ~66 g/L)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-amber-200">
+                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                <div class="text-4xl font-bold font-mono text-amber-700 mt-1">
+                                    <span id="dropCaDrops">23</span> <span class="text-xl font-sans font-semibold">หยด</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    (ค่าแม่นยำ <span id="dropCaExactDrops">22.5</span> หยด หรือ <strong id="dropCaMl" class="text-stone-900">1.13</strong> <strong>ml</strong>)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottle 3: Na (Baking Soda) -->
+                        <div class="rounded-2xl border-2 border-emerald-200 bg-emerald-50/40 p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900">
+                                        ขวดที่ 3 : บัฟเฟอร์ (Buffer)
+                                    </span>
+                                    <span id="dropNaStrengthTag" class="text-xs font-mono font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                                        1 หยด = +12 ppm/100ml
+                                    </span>
+                                </div>
+                                <h4 id="dropNaSaltName" class="text-xl font-bold text-stone-900 mt-3">เบกกิ้งโซดา (Baking Soda)</h4>
+                                
+                                <div class="mt-4 p-3.5 bg-white rounded-xl border border-emerald-200">
+                                    <div class="text-xs text-stone-500">วิธีผสมหัวเชื้อใส่ขวด <span class="dropBottleVolText font-bold">100</span> ml:</div>
+                                    <div class="text-lg font-bold text-stone-900 mt-0.5">
+                                        ใช้สาร <span id="dropNaGrams" class="text-emerald-700 font-mono text-2xl">8.06 g</span>
+                                    </div>
+                                    <div class="text-xs text-stone-500">เติมน้ำบริสุทธิ์ให้ได้ปริมาตรรวม <span class="dropBottleVolText font-semibold">100</span> ml</div>
+                                    <div id="dropNaSolubilityBar" class="text-[11px] font-mono text-emerald-700 mt-1 pt-1 border-t border-stone-100">
+                                        ความเข้มข้น: 81 g/L (ลิมิตละลาย ~96 g/L)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-emerald-200">
+                                <div class="text-sm font-medium text-stone-600">จำนวนที่ต้องหยดลงกา <span class="brewVolText font-mono font-bold">600</span> ml:</div>
+                                <div class="text-4xl font-bold font-mono text-emerald-700 mt-1">
+                                    <span id="dropNaDrops">14</span> <span class="text-xl font-sans font-semibold">หยด</span>
+                                </div>
+                                <div class="text-base font-mono text-stone-600 mt-1">
+                                    (ค่าแม่นยำ <span id="dropNaExactDrops">13.5</span> หยด หรือ <strong id="dropNaMl" class="text-stone-900">0.68</strong> <strong>ml</strong>)
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- All-in-One Bottle Shortcut -->
+                    <div class="bg-stone-100 border border-stone-300 rounded-2xl p-6">
+                        <div class="flex items-center gap-2 text-stone-900 font-bold text-lg mb-2">
+                            <i class="ph-fill ph-sparkle text-amber-500 text-xl"></i>
+                            <span>สูตรทางลัด: ผสมทั้ง 3 ตัวรวมในขวด <span class="dropBottleVolText font-mono">100</span> ml ขวดเดียวจบ</span>
+                        </div>
+                        <p class="text-base text-stone-700 leading-relaxed">
+                            หากไม่อยากแยก 3 ขวด ให้ชั่ง 
+                            <strong class="text-sky-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">ดีเกลือฝรั่ง <span id="singleMixMg">1.00g</span></strong> + 
+                            <strong class="text-amber-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">แคลเซียมแลคเตท <span id="singleMixCa">0.69g</span></strong> + 
+                            <strong class="text-emerald-700 font-mono bg-white px-2 py-0.5 rounded border border-stone-200">เบกกิ้งโซดา <span id="singleMixNa">0.45g</span></strong> 
+                            ผสมน้ำบริสุทธิ์ในขวด <span class="dropBottleVolText font-bold">100</span> ml
+                        </p>
+                        <div class="mt-3 p-3.5 bg-white rounded-xl border border-stone-200 flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-base font-medium text-stone-800">
+                                👉 เวลาชงกาแฟน้ำ <strong class="brewVolText font-mono">600</strong> ml ให้ตวงหัวเชื้อขวดนี้ใส่ลงไป:
+                            </span>
+                            <span class="text-xl font-bold font-mono text-stone-900">
+                                <span id="singleMixUseMl" class="text-amber-600 underline">6.0 ml</span> (ประมาณ <span id="singleMixUseDrops">120</span> หยด)
+                                <span class="text-xs font-sans font-normal text-stone-500 ml-1">ชงได้ <span id="singleBottleTotalBrews">16</span> กา</span>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Action: Copy Recipe -->
+                <div class="mt-8 pt-6 border-t border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-stone-500">
+                        *คำนวณตามน้ำหนักโมเลกุลจริง: ดีเกลือฝรั่ง (246.47 g/mol), Calcium Lactate Pentahydrate (308.30 g/mol), Baking Soda (84.01 g/mol)
+                    </div>
+                    <button onclick="copyRecipeToClipboard()" class="w-full sm:w-auto py-3 px-6 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-base flex items-center justify-center gap-2 transition shadow-sm shrink-0">
+                        <i class="ph ph-copy text-xl"></i>
+                        <span id="copyBtnText">คัดลอกสูตรน้ำชงกาแฟนี้</span>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Hidden textarea for clipboard copy -->
+    <textarea id="clipboardArea" class="fixed -top-96 opacity-0 pointer-events-none"></textarea>
+
+    <script>
+        // ==========================================
+        // CHEMICAL CONSTANTS & PRESETS
+        // ==========================================
+        // Conversion factor: mg of compound per Liter of water to achieve 1 ppm as CaCO3 (Molar Mass of CaCO3 = 100.0869 g/mol)
+        // maxPpmPerDrop100ml: Maximum safe practical concentration (at 25°C without precipitation) expressed in ppm added per 1 drop (0.05ml) into 100ml brew water
+        const SALTS = {
+            mg: {
+                epsom: {
+                    name: 'ดีเกลือฝรั่ง (Epsom Salt)',
+                    shortName: 'Epsom Salt',
+                    factor: 2.463, // MgSO4·7H2O (246.47 / 100.0869)
+                    solubilityLimitGPerL: 710, // ~71g / 100ml at 20-25°C
+                    maxPpmPerDrop100ml: 20,    // 20 ppm/drop => 40,000 ppm in bottle => 98.5 g/L (or 10x-20x super easy to dissolve)
+                    note: '1 ppm CaCO₃ ใช้ 2.463 mg/L (ละลายน้ำได้สูงมาก ~710 g/L)'
+                },
+                mgcl2: {
+                    name: 'แมกนีเซียมคลอไรด์ (MgCl₂·6H₂O)',
+                    shortName: 'MgCl₂·6H₂O',
+                    factor: 2.031, // 203.30 / 100.0869
+                    solubilityLimitGPerL: 540,
+                    maxPpmPerDrop100ml: 20,
+                    note: '1 ppm CaCO₃ ใช้ 2.031 mg/L (ละลายน้ำได้ ~540 g/L)'
+                }
+            },
+            ca: {
+                lactate_pentahydrate: {
+                    name: 'แคลเซียมแลคเตท (Calcium Lactate)',
+                    shortName: 'Calcium Lactate',
+                    factor: 3.080, // Ca(C3H5O3)2·5H2O (308.30 / 100.0869)
+                    solubilityLimitGPerL: 66, // ~6.6g / 100ml at 25°C (limiting factor!)
+                    maxPpmPerDrop100ml: 9,    // 9 ppm/drop => 18,000 ppm in bottle => 55.44 g/L (84% of saturation limit, safe & doesn't crystallize)
+                    note: '1 ppm CaCO₃ ใช้ 3.080 mg/L (ละลายน้ำได้จำกัด ~66 g/L ที่ 25°C)'
+                },
+                lactate_anhydrous: {
+                    name: 'แคลเซียมแลคเตท (Anhydrous)',
+                    shortName: 'Calcium Lactate (Anhydrous)',
+                    factor: 2.180, // Ca(C3H5O3)2 (218.22 / 100.0869)
+                    solubilityLimitGPerL: 50,
+                    maxPpmPerDrop100ml: 9,
+                    note: '1 ppm CaCO₃ ใช้ 2.180 mg/L (ละลายน้ำได้ ~50 g/L)'
+                },
+                cacl2_dihydrate: {
+                    name: 'แคลเซียมคลอไรด์ (CaCl₂·2H₂O)',
+                    shortName: 'CaCl₂·2H₂O',
+                    factor: 1.469, // 147.01 / 100.0869
+                    solubilityLimitGPerL: 745,
+                    maxPpmPerDrop100ml: 20,
+                    note: '1 ppm CaCO₃ ใช้ 1.469 mg/L (ละลายน้ำได้สูงมาก ~745 g/L)'
+                },
+                gypsum: {
+                    name: 'ยิปซัม (CaSO₄·2H₂O)',
+                    shortName: 'Gypsum',
+                    factor: 1.720, // 172.17 / 100.0869
+                    solubilityLimitGPerL: 2.4, // Very poorly soluble!
+                    maxPpmPerDrop100ml: 0.6,
+                    note: '1 ppm CaCO₃ ใช้ 1.720 mg/L (ละลายน้ำยากมาก ~2.4 g/L)'
+                }
+            },
+            na: {
+                bicarb: {
+                    name: 'เบกกิ้งโซดา (Baking Soda)',
+                    shortName: 'Baking Soda',
+                    factor: 1.680, // (2 * 84.007) / 100.0869
+                    solubilityLimitGPerL: 96, // ~9.6g / 100ml at 20-25°C
+                    maxPpmPerDrop100ml: 24,   // 24 ppm/drop => 48,000 ppm in bottle => 80.64 g/L (84% of saturation limit)
+                    note: '1 ppm CaCO₃ ใช้ 1.680 mg/L (ละลายน้ำได้ ~96 g/L ที่ 25°C)'
+                },
+                nacl: {
+                    name: 'เกลือบริสุทธิ์ (NaCl)',
+                    shortName: 'NaCl',
+                    factor: 1.168, // (2 * 58.44) / 100.0869
+                    solubilityLimitGPerL: 360,
+                    maxPpmPerDrop100ml: 25,
+                    note: '1 ppm CaCO₃ ใช้ 1.168 mg/L (ละลายน้ำได้ ~360 g/L)'
+                }
+            }
+        };
+
+        // Dropper Concentration Modes
+        // ppmPerDrop specifies how many ppm (as CaCO3) 1 drop (0.05ml) adds to 100ml of brew water
+        const DROPPER_CONC_MODES = {
+            low: {
+                badge: 'ความเข้มข้นต่ำ (มาตรฐาน 1x) — หยดละเอียด ละลายง่ายมาก',
+                explain: '<strong>โหมดความเข้มข้นต่ำ (1 หยด = +1 ppm ในน้ำ 100ml):</strong> เป็นความเข้มข้นมาตรฐานที่ละลายน้ำอุณหภูมิห้องได้ทันที เหมาะกับคนที่ต้องการปรับจูนสูตรละเอียดระดับ 0.2 ppm แต่ในกาขนาด 600ml จะต้องหยดหลายหยด (แนะนำให้ใช้ไซริงค์ดูดเป็น ml แทนการนับหยด)',
+                getPpmPerDrop: (mgSalt, caSalt, naSalt) => ({
+                    mg: Math.min(1, mgSalt.maxPpmPerDrop100ml),
+                    ca: Math.min(1, caSalt.maxPpmPerDrop100ml),
+                    na: Math.min(1, naSalt.maxPpmPerDrop100ml)
+                })
+            },
+            medium: {
+                badge: 'ความเข้มข้นปานกลาง (2.5x) — สมดุลระหว่างการละลายและจำนวนหยด',
+                explain: '<strong>โหมดความเข้มข้นปานกลาง (1 หยด = +2.5 ppm ในน้ำ 100ml):</strong> เข้มข้นขึ้น 2.5 เท่า ทำให้ลดจำนวนหยดลงไปได้มาก ในขณะที่ผงแร่ธาตุทั้ง 3 ชนิด (รวมถึง Calcium Lactate) ยังคงละลายในน้ำอุณหภูมิห้องได้ง่ายโดยไม่ตกตะกอน',
+                getPpmPerDrop: (mgSalt, caSalt, naSalt) => ({
+                    mg: Math.min(2.5, mgSalt.maxPpmPerDrop100ml),
+                    ca: Math.min(2.5, caSalt.maxPpmPerDrop100ml),
+                    na: Math.min(2.5, naSalt.maxPpmPerDrop100ml)
+                })
+            },
+            high: {
+                badge: 'ความเข้มข้นสูงเท่ากันทุกขวด (5x) — ชนเพดานของ Calcium Lactate',
+                explain: '<strong>โหมดความเข้มข้นสูงเท่ากันทุกขวด (1 หยด = +5 ppm ในน้ำ 100ml):</strong> ทุกขวดมีสเกลความเข้มข้นเท่ากันที่ 5x เพื่อให้นับหยดเทียบสัดส่วนกันง่าย โดยที่ขวด <strong>Calcium Lactate จะใช้ 3.08g / 100ml</strong> (ประมาณ 47% ของจุดอิ่มตัว) ละลายได้หมดจดโดยไม่ตกผลึก',
+                getPpmPerDrop: (mgSalt, caSalt, naSalt) => ({
+                    mg: Math.min(5, mgSalt.maxPpmPerDrop100ml),
+                    ca: Math.min(5, caSalt.maxPpmPerDrop100ml),
+                    na: Math.min(5, naSalt.maxPpmPerDrop100ml)
+                })
+            },
+            max: {
+                badge: 'ความเข้มข้นสูงสุดแยกตามขีดจำกัดการละลายจริง (Max Safe Solubility)',
+                explain: '<strong>โหมดความเข้มข้นสูงสุดแยกตามสาร (ประหยัดหยดที่สุด ~85% ของจุดอิ่มตัวที่ 25°C):</strong> เนื่องจากสารแต่ละตัวละลายน้ำได้ไม่เท่ากัน ระบบจึงคำนวณความเข้มข้นสูงสุดที่ปลอดภัย (ไม่ตกผลึกนอนก้นขวด) แยกตามแต่ละสาร:<br>• <strong>ดีเกลือฝรั่ง:</strong> ละลายได้ดีมาก ตั้งไว้ที่ <strong>1 หยด = +20 ppm/100ml</strong> (ใช้เพียง ~12 หยดในกา 600ml)<br>• <strong>Calcium Lactate:</strong> ละลายน้ำได้จำกัด (~6.6g/100ml) ตั้งไว้สูงสุดที่ <strong>1 หยด = +9 ppm/100ml (5.54g/100ml)</strong> <em>*แนะนำใช้น้ำอุ่นช่วยละลายตอนผสมครั้งแรก*</em><br>• <strong>Baking Soda:</strong> ละลายได้ ~9.6g/100ml ตั้งไว้สูงสุดที่ <strong>1 หยด = +24 ppm/100ml (8.06g/100ml)</strong>',
+                getPpmPerDrop: (mgSalt, caSalt, naSalt) => ({
+                    mg: mgSalt.maxPpmPerDrop100ml,
+                    ca: caSalt.maxPpmPerDrop100ml,
+                    na: naSalt.maxPpmPerDrop100ml
+                })
+            }
+        };
+
+        const PRESETS = {
+            washed: {
+                badge: 'Coffee Process: Washed',
+                title: 'Washed Process (เน้นความสะอาด ซับซ้อน กลิ่นดอกไม้)',
+                desc: 'กาแฟ Washed มีกรดผลไม้ที่ละเอียดอ่อน ใช้ TDS 85 ppm เน้นดีเกลือฝรั่ง (Mg 50%) เพื่อดึงกลิ่น Floral/Citrus และคุม Baking Soda ไม่ให้สูงเกินไป',
+                tds: 85,
+                mg: 50,
+                ca: 25,
+                na: 25
+            },
+            natural: {
+                badge: 'Coffee Process: Natural / Dry',
+                title: 'Natural Process (เน้นความหวานฉ่ำ เบอร์รี่ บอดี้แน่น)',
+                desc: 'กาแฟ Natural มีความหวานและกลิ่นผลไม้สุกสูง ใช้ TDS 95 ppm เพิ่มสัดส่วน Calcium Lactate (40%) เพื่อเสริมบอดี้ให้ครีมมี่นุ่มลึก และใช้ Baking Soda ชูความหวาน',
+                tds: 95,
+                mg: 30,
+                ca: 40,
+                na: 30
+            },
+            honey: {
+                badge: 'Coffee Process: Honey',
+                title: 'Honey Process (เน้นความหวานละมุน กลมกล่อม)',
+                desc: 'กาแฟ Honey อยู่กึ่งกลางระหว่างความคลีนและความหวานฉ่ำ ใช้ TDS 90 ppm โดยบาลานซ์ Mg และ Calcium Lactate เท่าๆ กัน (35:35) ให้สัมผัสที่นุ่มนวล',
+                tds: 90,
+                mg: 35,
+                ca: 35,
+                na: 30
+            },
+            anaerobic: {
+                badge: 'Coffee Process: Anaerobic / Infused',
+                title: 'Anaerobic / Fermented (เมล็ดหมักพิเศษ ละลายง่าย)',
+                desc: 'เมล็ด Anaerobic สกัดรสชาติออกมาง่ายกว่าปกติ จึงควรลด TDS ลงเหลือ 70 ppm เพื่อป้องกันการสกัดเกิน (Over-extraction) ที่ทำให้ขมฝาด',
+                tds: 70,
+                mg: 45,
+                ca: 20,
+                na: 35
+            },
+            acidity: {
+                badge: 'Flavor Target: Juicy Acidity',
+                title: 'เน้นความเปรี้ยวสดใส (Bright & Juicy Acidity)',
+                desc: 'อัดสัดส่วนดีเกลือฝรั่ง (Mg) สูงถึง 60% และลด Baking Soda ลงเหลือ 20% เพื่อให้กรดผลไม้แสดงตัวออกมาอย่างเต็มที่ เหมาะกับกาแฟคั่วอ่อน',
+                tds: 85,
+                mg: 60,
+                ca: 20,
+                na: 20
+            },
+            sweetness: {
+                badge: 'Flavor Target: High Sweetness',
+                title: 'เน้นความหวาน (Sweet & Syrupy)',
+                desc: 'เพิ่มสัดส่วน Baking Soda เป็น 35% ร่วมกับ Calcium Lactate ซึ่งมีแลคเตทไอออนช่วยให้รสสัมผัสนุ่มและรับรสหวานคาราเมลได้ชัดเจนขึ้น',
+                tds: 95,
+                mg: 35,
+                ca: 30,
+                na: 35
+            },
+            body: {
+                badge: 'Flavor Target: Heavy Body',
+                title: 'เน้นบอดี้นุ่มแน่น ครีมมี่ (Creamy & Round Body)',
+                desc: 'ใช้ TDS 110 ppm และเน้น Calcium Lactate ถึง 50% ซึ่งเด่นมากในการเพิ่มเนื้อสัมผัสให้นุ่มแน่น อิ่มเต็มปาก (Mouthfeel)',
+                tds: 110,
+                mg: 20,
+                ca: 50,
+                na: 30
+            },
+            balanced: {
+                badge: 'โปรไฟล์มาตรฐานแนะนำ',
+                title: 'Balanced (สมดุลมาตรฐาน SCA)',
+                desc: 'สูตรมาตรฐานที่ให้ความสมดุลทั้งความเปรี้ยว ความหวาน และบอดี้ (GH ~63 ppm, KH ~27 ppm) เหมาะสำหรับใช้เป็นน้ำตั้งต้นในการชงกาแฟทุกโพรเซส',
+                tds: 90,
+                mg: 45,
+                ca: 25,
+                na: 30
+            }
+        };
+
+        // State
+        let currentDropperSize = 100; // ml
+        let currentDropperConc = 'max'; // 'low' | 'medium' | 'high' | 'max'
+        let currentResultMode = 'direct'; // Default to direct weight view so grams are immediately visible
+        let activePresetKey = 'balanced';
+
+        // ==========================================
+        // INITIALIZATION & EVENT LISTENERS
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const tdsSlider = document.getElementById('targetTdsSlider');
+            const tdsInput = document.getElementById('targetTdsInput');
+
+            tdsSlider.addEventListener('input', (e) => {
+                tdsInput.value = e.target.value;
+                calculateAll();
+            });
+            tdsInput.addEventListener('input', (e) => {
+                let val = parseFloat(e.target.value) || 0;
+                tdsSlider.value = Math.min(200, Math.max(20, val));
+                calculateAll();
+            });
+
+            setupMineralSync('mg');
+            setupMineralSync('ca');
+            setupMineralSync('na');
+
+            calculateAll();
+        });
+
+        function setupMineralSync(mineral) {
+            const slider = document.getElementById(`${mineral}PercentSlider`);
+            const input = document.getElementById(`${mineral}PercentInput`);
+
+            slider.addEventListener('input', (e) => {
+                input.value = e.target.value;
+                autoBalanceOtherMinerals(mineral, parseFloat(e.target.value));
+                calculateAll();
+            });
+
+            input.addEventListener('input', (e) => {
+                let val = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+                slider.value = val;
+                autoBalanceOtherMinerals(mineral, val);
+                calculateAll();
+            });
+        }
+
+        function autoBalanceOtherMinerals(changedKey, newValue) {
+            const keys = ['mg', 'ca', 'na'].filter(k => k !== changedKey);
+            const remaining = Math.max(0, 100 - newValue);
+
+            const val1 = parseFloat(document.getElementById(`${keys[0]}PercentInput`).value) || 0;
+            const val2 = parseFloat(document.getElementById(`${keys[1]}PercentInput`).value) || 0;
+            const currentOtherSum = val1 + val2;
+
+            let new1, new2;
+            if (currentOtherSum === 0) {
+                new1 = Math.round(remaining / 2);
+                new2 = remaining - new1;
+            } else {
+                new1 = Math.round((val1 / currentOtherSum) * remaining);
+                new2 = remaining - new1;
+            }
+
+            document.getElementById(`${keys[0]}PercentInput`).value = new1;
+            document.getElementById(`${keys[0]}PercentSlider`).value = new1;
+            document.getElementById(`${keys[1]}PercentInput`).value = new2;
+            document.getElementById(`${keys[1]}PercentSlider`).value = new2;
+        }
+
+        function normalizePercentages() {
+            let mg = parseFloat(document.getElementById('mgPercentInput').value) || 0;
+            let ca = parseFloat(document.getElementById('caPercentInput').value) || 0;
+            let na = parseFloat(document.getElementById('naPercentInput').value) || 0;
+            let sum = mg + ca + na;
+
+            if (sum === 0) {
+                mg = 45; ca = 25; na = 30;
+            } else {
+                mg = Math.round((mg / sum) * 100);
+                ca = Math.round((ca / sum) * 100);
+                na = 100 - mg - ca;
+            }
+
+            setMineralValues(mg, ca, na);
+            calculateAll();
+        }
+
+        function setMineralValues(mg, ca, na) {
+            document.getElementById('mgPercentInput').value = mg;
+            document.getElementById('mgPercentSlider').value = mg;
+            document.getElementById('caPercentInput').value = ca;
+            document.getElementById('caPercentSlider').value = ca;
+            document.getElementById('naPercentInput').value = na;
+            document.getElementById('naPercentSlider').value = na;
+        }
+
+        // ==========================================
+        // PRESETS & UI CONTROLS
+        // ==========================================
+        function applyPreset(key) {
+            const p = PRESETS[key];
+            if (!p) return;
+            activePresetKey = key;
+
+            document.getElementById('bannerBadge').textContent = p.badge;
+            document.getElementById('bannerTitle').textContent = p.title;
+            document.getElementById('bannerDesc').textContent = p.desc;
+
+            // Reset all preset buttons to clean white
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.remove('border-stone-900', 'bg-stone-900', 'text-white', 'ring-2', 'ring-stone-900');
+                btn.classList.add('border-stone-200', 'bg-white');
+                btn.querySelectorAll('span, div').forEach(child => {
+                    if (child.classList.contains('text-stone-300')) {
+                        child.classList.replace('text-stone-300', 'text-stone-500');
+                    }
+                });
+            });
+
+            const activeBtn = document.getElementById(`btn-${key}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-stone-200', 'bg-white');
+                activeBtn.classList.add('border-stone-900', 'ring-2', 'ring-stone-900');
+            }
+
+            document.getElementById('targetTdsInput').value = p.tds;
+            document.getElementById('targetTdsSlider').value = p.tds;
+            setMineralValues(p.mg, p.ca, p.na);
+
+            calculateAll();
+        }
+
+        function setBrewVolume(vol) {
+            document.getElementById('brewWaterInput').value = vol;
+            document.querySelectorAll('.vol-pill').forEach(btn => {
+                if (btn.textContent.replace(/,/g, '').startsWith(vol.toString())) {
+                    btn.className = 'vol-pill text-sm font-mono font-bold px-3 py-1.5 rounded-xl bg-stone-900 text-white border border-stone-900 transition';
+                } else {
+                    btn.className = 'vol-pill text-sm font-mono font-medium px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-700 transition';
+                }
+            });
+            calculateAll();
+        }
+
+        function setDropperSize(size) {
+            currentDropperSize = size;
+            [30, 50, 100].forEach(s => {
+                const btn = document.getElementById(`dropSize-${s}`);
+                if (s === size) {
+                    btn.className = 'drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-900 bg-stone-900 text-white font-bold transition';
+                } else {
+                    btn.className = 'drop-size-btn px-4 py-2.5 rounded-xl text-base font-mono border-2 border-stone-300 bg-white text-stone-700 transition';
+                }
+            });
+            calculateAll();
+        }
+
+        function setDropperConc(mode) {
+            currentDropperConc = mode;
+            ['low', 'medium', 'high', 'max'].forEach(m => {
+                const btn = document.getElementById(`concBtn-${m}`);
+                if (!btn) return;
+                if (m === mode) {
+                    btn.className = 'conc-btn text-left p-3.5 rounded-xl border-2 border-stone-900 bg-stone-900 text-white transition';
+                    btn.querySelectorAll('.text-stone-500, .text-stone-700').forEach(el => {
+                        el.classList.remove('text-stone-500', 'text-stone-700');
+                        el.classList.add('text-stone-300');
+                    });
+                } else {
+                    btn.className = 'conc-btn text-left p-3.5 rounded-xl border-2 border-stone-300 bg-white hover:border-stone-400 transition';
+                    btn.querySelectorAll('.text-stone-300').forEach(el => {
+                        el.classList.remove('text-stone-300');
+                        el.classList.add('text-stone-500');
+                    });
+                }
+            });
+
+            const modeConfig = DROPPER_CONC_MODES[mode];
+            if (modeConfig) {
+                document.getElementById('concModeBadge').textContent = modeConfig.badge;
+                document.getElementById('concExplainText').innerHTML = modeConfig.explain;
+            }
+            calculateAll();
+        }
+
+        function switchResultMode(mode) {
+            currentResultMode = mode;
+            const tabDropper = document.getElementById('tabDropper');
+            const tabDirect = document.getElementById('tabDirect');
+            const viewDropper = document.getElementById('viewDropper');
+            const viewDirect = document.getElementById('viewDirect');
+
+            if (mode === 'dropper') {
+                tabDropper.className = 'px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all bg-white text-stone-900 shadow';
+                tabDirect.className = 'px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all text-stone-300 hover:text-white';
+                viewDropper.classList.remove('hidden');
+                viewDirect.classList.add('hidden');
+            } else {
+                tabDirect.className = 'px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all bg-white text-stone-900 shadow';
+                tabDropper.className = 'px-5 py-3 rounded-xl text-sm sm:text-base font-bold transition-all text-stone-300 hover:text-white';
+                viewDirect.classList.remove('hidden');
+                viewDropper.classList.add('hidden');
+            }
+        }
+
+        function toggleAdvancedChem() {
+            const panel = document.getElementById('advancedChemPanel');
+            const chevron = document.getElementById('advChevron');
+            panel.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // ==========================================
+        // CORE CALCULATION ENGINE
+        // ==========================================
+        function calculateAll() {
+            const targetTds = Math.max(0, parseFloat(document.getElementById('targetTdsInput').value) || 0);
+            const brewVolMl = Math.max(1, parseFloat(document.getElementById('brewWaterInput').value) || 600);
+            const brewVolLiters = brewVolMl / 1000;
+
+            const mgPct = parseFloat(document.getElementById('mgPercentInput').value) || 0;
+            const caPct = parseFloat(document.getElementById('caPercentInput').value) || 0;
+            const naPct = parseFloat(document.getElementById('naPercentInput').value) || 0;
+            const totalPct = mgPct + caPct + naPct;
+
+            // Update Summary Header
+            document.getElementById('summaryTdsText').textContent = targetTds;
+
+            // Update Total Percent Badge
+            const badge = document.getElementById('totalPercentBadge');
+            badge.textContent = `รวม: ${totalPct}%`;
+            badge.className = totalPct === 100 
+                ? 'text-sm font-mono font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800' 
+                : 'text-sm font-mono font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800';
+
+            // Calculate PPM of each ion (as CaCO3)
+            const mgPpm = targetTds * (mgPct / 100);
+            const caPpm = targetTds * (caPct / 100);
+            const naPpm = targetTds * (naPct / 100);
+
+            const ghPpm = mgPpm + caPpm;
+            const khPpm = naPpm;
+
+            // Update PPM & Bars
+            document.getElementById('mgPpmDisplay').textContent = mgPpm.toFixed(1);
+            document.getElementById('caPpmDisplay').textContent = caPpm.toFixed(1);
+            document.getElementById('naPpmDisplay').textContent = naPpm.toFixed(1);
+
+            document.getElementById('barMg').style.width = `${mgPct}%`;
+            document.getElementById('barCa').style.width = `${caPct}%`;
+            document.getElementById('barNa').style.width = `${naPct}%`;
+
+            document.getElementById('totalGhDisplay').textContent = `${ghPpm.toFixed(1)} ppm`;
+            document.getElementById('totalKhDisplay').textContent = `${khPpm.toFixed(1)} ppm`;
+
+            // GH : KH Ratio
+            const ratioStr = khPpm > 0 ? `${(ghPpm / khPpm).toFixed(1)} : 1` : `${ghPpm.toFixed(0)} : 0`;
+            document.getElementById('ghKhRatioDisplay').textContent = ratioStr;
+
+            // Get Selected Salts
+            const mgSaltKey = document.getElementById('mgSaltSelect').value;
+            const caSaltKey = document.getElementById('caSaltSelect').value;
+            const naSaltKey = document.getElementById('naSaltSelect').value;
+
+            const mgSalt = SALTS.mg[mgSaltKey];
+            const caSalt = SALTS.ca[caSaltKey];
+            const naSalt = SALTS.na[naSaltKey];
+
+            document.getElementById('mgSaltNote').textContent = mgSalt.note;
+            document.getElementById('caSaltNote').textContent = caSalt.note;
+            document.getElementById('naSaltNote').textContent = naSalt.note;
+
+            // Update common volume labels
+            document.querySelectorAll('.brewVolText').forEach(el => el.textContent = brewVolMl.toLocaleString());
+            document.querySelectorAll('.dropBottleVolText').forEach(el => el.textContent = currentDropperSize);
+
+            // ------------------------------------------
+            // 1. DIRECT KETTLE MIX CALCULATION
+            // ------------------------------------------
+            const directMg_mg = mgPpm * mgSalt.factor * brewVolLiters;
+            const directCa_mg = caPpm * caSalt.factor * brewVolLiters;
+            const directNa_mg = naPpm * naSalt.factor * brewVolLiters;
+
+            const directMg_g = directMg_mg / 1000;
+            const directCa_g = directCa_mg / 1000;
+            const directNa_g = directNa_mg / 1000;
+            const directTotal_mg = directMg_mg + directCa_mg + directNa_mg;
+
+            document.getElementById('directMgSaltName').textContent = mgSalt.name;
+            document.getElementById('directCaSaltName').textContent = caSalt.name;
+            document.getElementById('directNaSaltName').textContent = naSalt.name;
+
+            document.getElementById('directMgPpmText').textContent = mgPpm.toFixed(1);
+            document.getElementById('directCaPpmText').textContent = caPpm.toFixed(1);
+            document.getElementById('directNaPpmText').textContent = naPpm.toFixed(1);
+
+            document.getElementById('directMgGrams').textContent = directMg_g.toFixed(3);
+            document.getElementById('directCaGrams').textContent = directCa_g.toFixed(3);
+            document.getElementById('directNaGrams').textContent = directNa_g.toFixed(3);
+
+            document.getElementById('directMgMg').textContent = directMg_mg.toFixed(1);
+            document.getElementById('directCaMg').textContent = directCa_mg.toFixed(1);
+            document.getElementById('directNaMg').textContent = directNa_mg.toFixed(1);
+
+            document.getElementById('directTotalGrams').textContent = (directTotal_mg / 1000).toFixed(3);
+            document.getElementById('directTotalMg').textContent = directTotal_mg.toFixed(1);
+
+            // ------------------------------------------
+            // 2. DROPPER CONCENTRATE CALCULATION
+            // ------------------------------------------
+            // Standard dropper: 20 drops = 1 ml (1 drop = 0.05 ml).
+            // In 100 ml of brew water, dilution factor of 1 drop is 100 / 0.05 = 2,000x.
+            const concConfig = DROPPER_CONC_MODES[currentDropperConc] || DROPPER_CONC_MODES.max;
+            const ppmPerDropMap = concConfig.getPpmPerDrop(mgSalt, caSalt, naSalt);
+
+            const mgPpmPerDrop = ppmPerDropMap.mg;
+            const caPpmPerDrop = ppmPerDropMap.ca;
+            const naPpmPerDrop = ppmPerDropMap.na;
+
+            // Required concentration inside the dropper bottle (in ppm as CaCO3)
+            const mgBottlePpm = mgPpmPerDrop * 2000;
+            const caBottlePpm = caPpmPerDrop * 2000;
+            const naBottlePpm = naPpmPerDrop * 2000;
+
+            const dropperLiters = currentDropperSize / 1000;
+
+            // Grams of salt per Liter in the dropper bottle
+            const mgBottleGPerL = (mgBottlePpm * mgSalt.factor) / 1000;
+            const caBottleGPerL = (caBottlePpm * caSalt.factor) / 1000;
+            const naBottleGPerL = (naBottlePpm * naSalt.factor) / 1000;
+
+            // Grams of salt needed for the chosen dropper bottle size (30ml, 50ml, 100ml)
+            const dropBottleMg_g = mgBottleGPerL * dropperLiters;
+            const dropBottleCa_g = caBottleGPerL * dropperLiters;
+            const dropBottleNa_g = naBottleGPerL * dropperLiters;
+
+            // Drops needed for the target brew water volume
+            const mgDrops = (mgPpm / mgPpmPerDrop) * (brewVolMl / 100);
+            const caDrops = (caPpm / caPpmPerDrop) * (brewVolMl / 100);
+            const naDrops = (naPpm / naPpmPerDrop) * (brewVolMl / 100);
+
+            const mgMl = mgDrops / 20;
+            const caMl = caDrops / 20;
+            const naMl = naDrops / 20;
+
+            document.getElementById('dropMgSaltName').textContent = mgSalt.name;
+            document.getElementById('dropCaSaltName').textContent = caSalt.name;
+            document.getElementById('dropNaSaltName').textContent = naSalt.name;
+
+            document.getElementById('dropMgStrengthTag').textContent = `1 หยด = +${mgPpmPerDrop} ppm/100ml`;
+            document.getElementById('dropCaStrengthTag').textContent = `1 หยด = +${caPpmPerDrop} ppm/100ml`;
+            document.getElementById('dropNaStrengthTag').textContent = `1 หยด = +${naPpmPerDrop} ppm/100ml`;
+
+            document.getElementById('dropMgGrams').textContent = `${dropBottleMg_g.toFixed(2)} g`;
+            document.getElementById('dropCaGrams').textContent = `${dropBottleCa_g.toFixed(2)} g`;
+            document.getElementById('dropNaGrams').textContent = `${dropBottleNa_g.toFixed(2)} g`;
+
+            document.getElementById('dropMgSolubilityBar').textContent = `ความเข้มข้น: ${mgBottleGPerL.toFixed(1)} g/L (จุดอิ่มตัว ~${mgSalt.solubilityLimitGPerL} g/L)`;
+            document.getElementById('dropCaSolubilityBar').textContent = `ความเข้มข้น: ${caBottleGPerL.toFixed(1)} g/L (จุดอิ่มตัว ~${caSalt.solubilityLimitGPerL} g/L)`;
+            document.getElementById('dropNaSolubilityBar').textContent = `ความเข้มข้น: ${naBottleGPerL.toFixed(1)} g/L (จุดอิ่มตัว ~${naSalt.solubilityLimitGPerL} g/L)`;
+
+            document.getElementById('dropMgDrops').textContent = Math.round(mgDrops);
+            document.getElementById('dropCaDrops').textContent = Math.round(caDrops);
+            document.getElementById('dropNaDrops').textContent = Math.round(naDrops);
+
+            document.getElementById('dropMgExactDrops').textContent = mgDrops.toFixed(1);
+            document.getElementById('dropCaExactDrops').textContent = caDrops.toFixed(1);
+            document.getElementById('dropNaExactDrops').textContent = naDrops.toFixed(1);
+
+            document.getElementById('dropMgMl').textContent = mgMl.toFixed(2);
+            document.getElementById('dropCaMl').textContent = caMl.toFixed(2);
+            document.getElementById('dropNaMl').textContent = naMl.toFixed(2);
+
+            // ------------------------------------------
+            // 3. ALL-IN-ONE SINGLE DROPPER BOTTLE
+            // ------------------------------------------
+            const totalBrewCapacityLiters = (currentDropperSize * 100) / 1000; 
+            const singleMixMg_g = (mgPpm * mgSalt.factor * totalBrewCapacityLiters) / 1000;
+            const singleMixCa_g = (caPpm * caSalt.factor * totalBrewCapacityLiters) / 1000;
+            const singleMixNa_g = (naPpm * naSalt.factor * totalBrewCapacityLiters) / 1000;
+
+            const useMlForBrew = brewVolMl / 100;
+            const useDropsForBrew = Math.round(useMlForBrew * 20);
+            const totalBrewsPossible = Math.floor(currentDropperSize / useMlForBrew);
+
+            document.getElementById('singleMixMg').textContent = `${singleMixMg_g.toFixed(2)}g`;
+            document.getElementById('singleMixCa').textContent = `${singleMixCa_g.toFixed(2)}g`;
+            document.getElementById('singleMixNa').textContent = `${singleMixNa_g.toFixed(2)}g`;
+            document.getElementById('singleMixUseMl').textContent = `${useMlForBrew.toFixed(1)} ml`;
+            document.getElementById('singleMixUseDrops').textContent = useDropsForBrew;
+            document.getElementById('singleBottleTotalBrews').textContent = totalBrewsPossible;
+        }
+
+        // ==========================================
+        // CLIPBOARD EXPORT
+        // ==========================================
+        function copyRecipeToClipboard() {
+            const targetTds = document.getElementById('targetTdsInput').value;
+            const brewVol = document.getElementById('brewWaterInput').value;
+            const mgPpm = document.getElementById('mgPpmDisplay').textContent;
+            const caPpm = document.getElementById('caPpmDisplay').textContent;
+            const naPpm = document.getElementById('naPpmDisplay').textContent;
+
+            const mgSalt = document.getElementById('directMgSaltName').textContent;
+            const caSalt = document.getElementById('directCaSaltName').textContent;
+            const naSalt = document.getElementById('directNaSaltName').textContent;
+
+            const directMg = document.getElementById('directMgGrams').textContent;
+            const directCa = document.getElementById('directCaGrams').textContent;
+            const directNa = document.getElementById('directNaGrams').textContent;
+
+            const dropMgDrops = document.getElementById('dropMgDrops').textContent;
+            const dropCaDrops = document.getElementById('dropCaDrops').textContent;
+            const dropNaDrops = document.getElementById('dropNaDrops').textContent;
+
+            const dropMgGrams = document.getElementById('dropMgGrams').textContent;
+            const dropCaGrams = document.getElementById('dropCaGrams').textContent;
+            const dropNaGrams = document.getElementById('dropNaGrams').textContent;
+
+            const text = `☕ สูตรน้ำชงกาแฟ (Coffee Water Lab)
+• เป้าหมาย TDS: ${targetTds} ppm (น้ำชงกาแฟ ${brewVol} ml)
+• สัดส่วนแร่ธาตุ: Mg ${mgPpm} ppm | Ca ${caPpm} ppm | Buffer ${naPpm} ppm
+
+[1. ชั่งผงเทลงน้ำ ${brewVol} ml โดยตรง]
+- ${mgSalt}: ${directMg} กรัม
+- ${caSalt}: ${directCa} กรัม
+- ${naSalt}: ${directNa} กรัม
+
+[2. หยดจากขวด Dropper (${currentDropperSize} ml) ลงน้ำ ${brewVol} ml]
+- ขวด Mg (ละลาย ${dropMgGrams} ใน ${currentDropperSize}ml): ใช้ ${dropMgDrops} หยด
+- ขวด Ca (ละลาย ${dropCaGrams} ใน ${currentDropperSize}ml): ใช้ ${dropCaDrops} หยด
+- ขวด Buffer (ละลาย ${dropNaGrams} ใน ${currentDropperSize}ml): ใช้ ${dropNaDrops} หยด`;
+
+            const area = document.getElementById('clipboardArea');
+            area.value = text;
+            area.select();
+            document.execCommand('copy');
+
+            const btnText = document.getElementById('copyBtnText');
+            const original = btnText.textContent;
+            btnText.textContent = 'คัดลอกสูตรเรียบร้อยแล้ว!';
+            setTimeout(() => {
+                btnText.textContent = original;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
